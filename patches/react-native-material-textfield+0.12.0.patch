@@ -1,0 +1,30 @@
+diff --git a/node_modules/react-native-material-textfield/src/components/affix/index.js b/node_modules/react-native-material-textfield/src/components/affix/index.js
+index 0f85022..e2dede9 100644
+--- a/node_modules/react-native-material-textfield/src/components/affix/index.js
++++ b/node_modules/react-native-material-textfield/src/components/affix/index.js
+@@ -3,1 +3,1 @@
+-import { Animated } from 'react-native';
++import { Animated, Text } from 'react-native';
+@@ -27,1 +27,1 @@
+-    style: Animated.Text.propTypes.style,
++    style: Text.propTypes.style,
+diff --git a/node_modules/react-native-material-textfield/src/components/helper/index.js b/node_modules/react-native-material-textfield/src/components/helper/index.js
+index 6060f9f..98b3c64 100644
+--- a/node_modules/react-native-material-textfield/src/components/helper/index.js
++++ b/node_modules/react-native-material-textfield/src/components/helper/index.js
+@@ -3,1 +3,1 @@
+-import { View, Animated } from 'react-native';
++import { View, Animated, Text } from 'react-native';
+@@ -13,1 +13,1 @@
+-    style: Animated.Text.propTypes.style,
++    style: Text.propTypes.style,
+diff --git a/node_modules/react-native-material-textfield/src/components/label/index.js b/node_modules/react-native-material-textfield/src/components/label/index.js
+index 82eaf03..2b9038d 100644
+--- a/node_modules/react-native-material-textfield/src/components/label/index.js
++++ b/node_modules/react-native-material-textfield/src/components/label/index.js
+@@ -3,1 +3,1 @@
+-import { Animated } from 'react-native';
++import { Animated, Text } from 'react-native';
+@@ -32,1 +32,1 @@
+-    style: Animated.Text.propTypes.style,
++    style: Text.propTypes.style,
