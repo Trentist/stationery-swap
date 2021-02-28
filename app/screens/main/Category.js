@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     paddingHorizontal: 20,
-    paddingVertical: 20
+    paddingTop: 20
   },
   titleBar: {
     display: 'flex',

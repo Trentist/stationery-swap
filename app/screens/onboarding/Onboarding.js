@@ -40,7 +40,7 @@ const Onboarding = (props) => {
         <LargeButton style={styles.button} title="SIGN UP" onPress={() => {console.log("button")}} />
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText}>Already have an account?</Text>
-          <TextLink style={styles.bottomText} onPress={() => {console.log("link")}}>Login here!</TextLink>
+          <TextLink style={styles.bottomText} onPress={() => {props.navigation.navigate('Auth')}}>Login here!</TextLink>
         </View>
       </View>
       

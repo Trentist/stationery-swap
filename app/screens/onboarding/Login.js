@@ -29,7 +29,7 @@ const Login = (props) => {
       </View>
       <View style={styles.bottomContainer}>
         <Text style={styles.bottomText}>Don't have an account? </Text>
-        <TextLink style={styles.bottomText} onPress={() => {console.log("link")}}>Create new now!</TextLink>
+        <TextLink style={styles.bottomText} onPress={() => {}}>Create new now!</TextLink>
       </View>
       <View style={styles.bottomContainer}>
         <Text style={styles.bottomText}>By signing up, you are agree with our </Text>

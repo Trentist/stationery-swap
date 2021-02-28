@@ -3,6 +3,7 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
 import Splash from './screens/onboarding/Splash';
@@ -11,18 +12,19 @@ import Auth from './screens/onboarding/Auth';
 import CreateProfile from './screens/onboarding/CreateProfile';
 import Test from './screens/onboarding/Test';
 
-import MainDrawer from './components/pages/MainDrawer';
+import MainTabBar from './components/pages/MainTabBar';
 import Home from './screens/main/Home';
 import Category from './screens/main/Category';
+import Search from './screens/main/Search';
 
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 const OnboardingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="CreateProfile">
+      initialRouteName="Auth">
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="Auth" component={Auth} />
@@ -32,26 +34,18 @@ const OnboardingNavigator = () => {
   );
 };
 
-const MainContentNavigator = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home} />
-    </Stack.Navigator>
-  );
-};
-
 const MainNavigator = () => {
   return (
-    <Drawer.Navigator
-      initialRouteName="Category"
-      drawerType="slide"
-      drawerContent={(props) => <MainDrawer {...props} />}
+    <Tab.Navigator
+      initialRouteName="Home"
+      tabBar={props => <MainTabBar {...props} />}
     >
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Category" component={Category} />
-    </Drawer.Navigator>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Alarm" component={Category} />
+      <Tab.Screen name="Add" component={Category} />
+      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen name="User" component={Category} />
+    </Tab.Navigator>
   );
 };
 
@@ -60,7 +54,7 @@ const Root = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Main">
+        initialRouteName="Onboarding">
         <Stack.Screen name="Main" component={MainNavigator} />
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       </Stack.Navigator>
