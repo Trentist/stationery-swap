@@ -18,7 +18,7 @@ const CreateProfile = (props) => {
       <Text style={styles.title}>Create Profile</Text>
       <View style={styles.avatarCont}>
         <TouchableOpacity style={styles.touchable}>
-          <Image style={{width: 45, height: 40}} source={assets.images.icons.openImage} />
+          <Image style={{width: 45, height: 40}} source={assets.images.icons.uploadIcon} />
         </TouchableOpacity>
       </View>
       <Text style={styles.description}>Choose your Avatar</Text>

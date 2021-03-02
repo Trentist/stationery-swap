@@ -17,6 +17,7 @@ import Category from './screens/main/Category';
 import Search from './screens/main/Search';
 import ItemPage from './screens/main/ItemPage';
 import SellerProfile from './screens/main/SellerProfile';
+import NewListing from './screens/main/NewListing';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -52,7 +53,7 @@ const MainNavigator = () => {
       <Tab.Screen name="Alarm" component={Category} />
       <Tab.Screen name="Add" component={Category} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="User" component={SellerProfile} />
+      <Tab.Screen name="User" component={NewListing} />
     </Tab.Navigator>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { Input } from 'react-native-elements';
+import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 

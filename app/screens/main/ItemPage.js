@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import { Input } from 'react-native-elements';
-import { SmallButton, CustomButton } from '../../components/common';
+import { SmallButton, CustomButton, TwoColumnsView } from '../../components/common';
 import Item from '../../components/pages/Item';
 import ChatUser from '../../components/pages/ChatUser';
 import assets from '../../assets';
@@ -48,38 +48,17 @@ const DATA = [
 
 const ItemPage = (props) => {
 
-  const Items = () => {
-    const items = [];
-    for (var i = 0; i < DATA.length; i += 2) {
-      const first = DATA[i];
-      const second = DATA[i + 1];
-      const key = first.id;
-      if (second) key += second.id;
-      items.push(
-        <View style={styles.itemRow} key={key + "-" + i}>
-          <Item 
-            style={styles.featured}
-            image={assets.images.samples.featured}
-            featured
-            unmarked
-            price={5} 
-          />
-          {
-            second && 
-              <Item 
-                style={styles.featured}
-                image={assets.images.samples.featured}
-                featured
-                unmarked
-                price={5} 
-              />
-          }
-        </View>
-      );
-    }
-    return items;
-  }
-  
+  const renderItem = (item, index) => {
+    return (
+      <Item 
+        style={styles.featured}
+        image={assets.images.samples.featured}
+        featured
+        unmarked
+        price={5} 
+      />
+    )
+  }  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image style={styles.topImage} source={assets.images.samples.item} />
@@ -141,13 +120,16 @@ const ItemPage = (props) => {
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Similar Items</Text>
-        <Items/>
+        <TwoColumnsView
+          data={DATA}
+          renderItem={renderItem}
+        />
       </View>
     </ScrollView>
   );
 };
 
-const paddingHorizontal = 20;
+const paddingHorizontal = config.paddingHorizontal;
 const borderBottomColor = '#A0A0A0';
 
 const styles = StyleSheet.create({

@@ -14,7 +14,7 @@ const images = {
   },
   icons: {
     back: require('./images/icons/back.png'),
-    openImage: require('./images/icons/open-image.png'),
+    uploadIcon: require('./images/icons/upload.png'),
     marked: require('./images/icons/marked.png'),
     unmarked: require('./images/icons/unmarked.png'),
     chat: require('./images/icons/chat.png'),
@@ -27,6 +27,7 @@ const images = {
     profile_back: require('./images/main/profileback_sample.png'),
     avatar1: require('./images/main/avatar_sample1.png'),
     avatar2: require('./images/main/avatar_sample2.png'),
+    listing: require('./images/main/listing_sample.png'),
   },
 };
 
