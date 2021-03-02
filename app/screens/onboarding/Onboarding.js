@@ -59,7 +59,6 @@ const styles = {
     alignItems: 'center',
     paddingHorizontal: 40,
     paddingVertical: 20,
-    backgroundColor: 'white'
   },
   textContainer: {
     height: 100

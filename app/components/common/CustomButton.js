@@ -40,7 +40,7 @@ export default CustomButton = (props) => {
   };
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={() => { if (onPress) onPress(); }}>
+      <TouchableOpacity style={styles.button} onPress={() => { if (onPress) onPress(); }} activeOpacity={0.7}>
         <Text style={styles.title}>
           {title}
         </Text>
