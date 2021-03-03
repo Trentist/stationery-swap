@@ -18,6 +18,8 @@ import Search from './screens/main/Search';
 import ItemPage from './screens/main/ItemPage';
 import SellerProfile from './screens/main/SellerProfile';
 import NewListing from './screens/main/NewListing';
+import Messages from './screens/main/Messages';
+import Chatbox from './screens/main/Chatbox';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -50,10 +52,10 @@ const MainNavigator = () => {
       tabBar={props => <MainTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Alarm" component={Category} />
-      <Tab.Screen name="Add" component={Category} />
+      <Tab.Screen name="Alarm" component={Messages} />
+      <Tab.Screen name="Add" component={NewListing} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="User" component={NewListing} />
+      <Tab.Screen name="User" component={Chatbox} />
     </Tab.Navigator>
   );
 };
