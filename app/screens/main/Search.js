@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    fontFamily: 'Futura-Bold'
   },
   item: {
     marginLeft: 20,
@@ -99,11 +98,9 @@ const styles = StyleSheet.create({
   shortcut: {
     fontSize: 20,
     fontWeight: 'bold',
-    fontFamily: 'Futura-Medium',
   },
   category: {
     fontSize: 20,
-    fontFamily: 'Futura-Medium',
     color: '#9F9F9F',
   }
 });

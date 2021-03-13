@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Bold',
     fontWeight: 'bold'
   },
   searchBox: {

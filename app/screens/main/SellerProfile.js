@@ -6,7 +6,7 @@ import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
 
-const DATA = [
+const DATA1 = [
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
     title: 'First Item',
@@ -19,29 +19,24 @@ const DATA = [
     id: '58694a0f-3da1-471f-bd96-145571e29d72',
     title: 'Third Item',
   },
+];
+
+const DATA2 = [
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bd',
+    title: 'First Item',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f62',
+    title: 'Second Item',
   },
 ];
 
@@ -82,9 +77,16 @@ const SellerProfile = (props) => {
         </Text>
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.itemTitle}>Items</Text>
+        <Text style={styles.itemTitle}>Items to sell</Text>
         <TwoColumnsView
-          data={DATA}
+          data={DATA1}
+          renderItem={renderItem}
+        />
+      </View>
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemTitle}>Items looking for</Text>
+        <TwoColumnsView
+          data={DATA2}
           renderItem={renderItem}
         />
       </View>
@@ -176,7 +178,8 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 20,
-    marginBottom: 10
+    marginBottom: 10,
+    fontWeight: 'bold'
   }, 
   itemList: {
     width: '100%',

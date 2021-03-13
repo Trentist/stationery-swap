@@ -30,7 +30,6 @@ export default CustomButton = (props) => {
       justifyContent: 'center',
     },
     title: {
-      fontFamily: (style.fontWeight? style.fontWeight: "Futura-Bold"),
       fontWeight: (style.fontWeight? style.fontWeight: "600"),
       fontSize: (style.fontSize? style.fontSize: 16),
       color: (style.color ? style.color : "white"),

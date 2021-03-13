@@ -68,13 +68,11 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 12,
     fontWeight: 'bold',
-    fontFamily: 'SFProDisplay-Medium',
     color: '#00C569',
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'Futura-Bold',
     color: 'white',
     position: 'absolute',
     marginHorizontal: 20,

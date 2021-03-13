@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { Input } from 'react-native-elements';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
@@ -66,7 +66,7 @@ const Home = (props) => {
         containerStyle={styles.searchBox}
         inputStyle={{fontSize: 15, paddingVertical: 0}}
       />
-      <View style={styles.mainContainer}>
+      <ScrollView style={styles.mainContainer}>
         <View style={styles.itemsContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Featured</Text>
@@ -99,7 +99,23 @@ const Home = (props) => {
             horizontal
           />
         </View>
-      </View>
+        <View style={styles.itemsContainer, styles.followContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>People you follow</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAll}>See all ▶</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            style={styles.itemList}
+            ItemSeparatorComponent={separator}
+            renderItem={renderFeaturedItem}
+            data={DATA}
+            keyExtractor={item => item.id}
+            horizontal
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -113,7 +129,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 20
+    paddingTop: 20,
+    paddingBottom: 10
   },
   searchBox: {
     height: 40,
@@ -124,10 +141,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     width: '100%',
-    marginTop: 30,
+    marginTop: 20,
   },
   itemsContainer: {
-    height: '50%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
@@ -141,28 +157,29 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Bold',
     fontWeight: 'bold'
   },
   seeAll: {
     fontSize: 15,
-    fontFamily: 'Futura-Medium',
     fontWeight: 'bold'
   },
   itemList: {
     width: '100%',
-    height: '100%',
     paddingVertical: 10
   },
   featured: {
-    width: 180
+    width: 180,
+    height: 200
   },
   category: {
-    width: 150
+    width: 150,
+    height: 120
   },
   categoryContainer: {
-    height: '30%',
-    marginTop: 30
+    marginTop: 10
+  },
+  followContainer: {
+    marginTop: 20
   }
 });
 

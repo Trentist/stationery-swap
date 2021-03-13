@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: 'flex-start',
     fontSize: 20,
-    fontFamily: 'Futura-Bold',
     fontWeight: 'bold',
     marginBottom: 30
   },

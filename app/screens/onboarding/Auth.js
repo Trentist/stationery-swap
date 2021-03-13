@@ -29,7 +29,7 @@ const Auth = (props) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={assets.images.app_text_logo} />
+      <Image style={styles.logo} width={154} height={70} source={assets.images.app_text_logo} />
       <View style={styles.textCont}>
         <Text style={styles.title}>Discover new stationery and crafts to trade and buy</Text>
       </View>
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontFamily: 'Roboto-Regular',
     fontSize: 14,
     textAlign: 'center',
     color: '#1A1A1A'
@@ -81,7 +80,6 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     color: '#1D2226', 
-    fontFamily: 'Futura-Bold', 
     fontSize: 16, 
     fontWeight: 'bold'
   }

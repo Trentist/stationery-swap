@@ -65,7 +65,6 @@ const styles = {
   },
   text: {
     fontSize: 20,
-    fontFamily: 'Futura-Medium',
     fontWeight: 'bold',
     textAlign: 'center'
   },

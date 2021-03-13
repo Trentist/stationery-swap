@@ -26,7 +26,7 @@ const styles = {
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
     width: '100%',
     height: '100%'
   }

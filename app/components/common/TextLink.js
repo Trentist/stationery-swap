@@ -7,7 +7,6 @@ export default TextLink = (props) => {
   const style = props.style?props.style:{};
   const styles = {
     text: {
-      fontFamily: (style.fontWeight? style.fontWeight: "FuturaBT-Book"),
       fontWeight: (style.fontWeight? style.fontWeight: "600"),
       fontSize: (style.fontSize? style.fontSize: 12),
       color: (style.color ? style.color : "#F36190")

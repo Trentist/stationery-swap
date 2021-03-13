@@ -37,7 +37,7 @@ const OnboardingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Splash">
+      initialRouteName="Auth">
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="Auth" component={Auth} />
@@ -49,13 +49,13 @@ const OnboardingNavigator = () => {
 const MainNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="User"
+      initialRouteName="Search"
       tabBar={props => <MainTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Alarm" component={Messages} />
       <Tab.Screen name="Add" component={NewListing} />
-      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen name="Search" component={SellerProfile} />
       <Tab.Screen name="User" component={Activity} />
     </Tab.Navigator>
   );
@@ -66,7 +66,7 @@ const Root = () => {
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Main">
+        initialRouteName="Onboarding">
         <Stack.Screen name="Main" component={MainNavigator} />
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       </Stack.Navigator>
