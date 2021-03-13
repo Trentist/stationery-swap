@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'gray'
   }
 });
 

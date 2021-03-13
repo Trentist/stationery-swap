@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, ScrollView, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown'
 import assets from '../../assets';
-import { TwoColumnsView } from '../../components/common';
+import { TwoColumnsView, ImageButton } from '../../components/common';
 import UploadImage from '../../components/pages/UploadImage';
 import config from '../../config';
 

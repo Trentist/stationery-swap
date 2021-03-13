@@ -102,6 +102,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginTop: 20,
+    marginBottom: 20
+  },
   title: {
     fontSize: 20,
     fontFamily: 'SFProDisplay-Bold',

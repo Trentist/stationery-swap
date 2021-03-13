@@ -20,6 +20,7 @@ import SellerProfile from './screens/main/SellerProfile';
 import NewListing from './screens/main/NewListing';
 import Messages from './screens/main/Messages';
 import Chatbox from './screens/main/Chatbox';
+import Activity from './screens/main/Activity';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -55,7 +56,7 @@ const MainNavigator = () => {
       <Tab.Screen name="Alarm" component={Messages} />
       <Tab.Screen name="Add" component={NewListing} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="User" component={Chatbox} />
+      <Tab.Screen name="User" component={Activity} />
     </Tab.Navigator>
   );
 };

@@ -11,8 +11,7 @@ const Item = (props) => {
   }
 
   return (
-    <TouchableHighlight underlayColor="#DDDDDD" onPress={onPress}>
-      <View style={[styles.container, style]}>
+    <View style={[styles.container, style]}>
       <Image
         style={styles.image}
         source={props.image}
@@ -21,8 +20,7 @@ const Item = (props) => {
         <Text style={styles.name}>{props.name}</Text>
         <Text style={styles.content} numberOfLines={1}>{props.content}</Text>
       </View>
-      </View>
-    </TouchableHighlight>
+    </View>
   );
 };
 
