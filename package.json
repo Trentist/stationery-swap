@@ -13,10 +13,13 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/toolbar-android": "^0.1.0-rc.2",
+    "@react-native-firebase/app": "^11.1.2",
+    "@react-native-firebase/auth": "^11.1.2",
     "@react-navigation/bottom-tabs": "^5.11.7",
     "@react-navigation/drawer": "^5.12.3",
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.2",
+    "formik": "^2.2.6",
     "patch-package": "^6.2.2",
     "postinstall-postinstall": "^2.1.0",
     "react": "16.13.1",
@@ -25,8 +28,10 @@
     "react-native-extra-dimensions-android": "^1.2.5",
     "react-native-gesture-handler": "^1.10.0",
     "react-native-image-slider-box": "^1.0.12",
+    "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-material-dropdown-v2": "^0.11.1",
+    "react-native-modal": "^11.7.0",
     "react-native-paper": "^4.7.1",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
@@ -37,7 +42,8 @@
     "react-native-vector-icons": "^8.0.0",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

@@ -6,7 +6,7 @@ function MyTabBar({ state, navigation }) {
   
   const tabs = [
     { label: 'Home', icon: 'home', icon_type: 'material', route: 'Home', key: 'key1' },
-    { label: 'Alarm', icon: 'notifications-none', icon_type: 'material', route: 'Alarm', key: 'key2' },
+    { label: 'Activity', icon: 'notifications-none', icon_type: 'material', route: 'Activity', key: 'key2' },
     { label: 'Add', icon: 'post-add', icon_type: 'material', route: 'Add', key: 'key3' },
     { label: 'Search', icon: 'search', icon_type: 'material', route: 'Search', key: 'key4' },
     { label: 'User', icon: 'person-outline', icon_type: 'material', route: 'User', key: 'key5' }
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'gray'
   }
 });
 

@@ -75,7 +75,7 @@ const Category = (props) => {
           ItemSeparatorComponent={separator}
           renderItem={renderItem}
           data={DATA}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={{justifyContent: 'space-between'}}
         />

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "583315892753",
+    "project_id": "stationery-swap-2b901",
+    "storage_bucket": "stationery-swap-2b901.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583315892753:android:f063bfefed0cf0c246dfb0",
+        "android_client_info": {
+          "package_name": "com.stationery_swap_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583315892753-k3r3uqvo2gepl8sf89me5dkk32cldhn7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOuhfI8CcWY26tRufZzDuzTUfAk-QN4vg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583315892753-k3r3uqvo2gepl8sf89me5dkk32cldhn7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

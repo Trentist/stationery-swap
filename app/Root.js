@@ -1,13 +1,15 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { connect } from 'react-redux';
 
+import config from './config';
 
 import Splash from './screens/onboarding/Splash';
-import Onboarding from './screens/onboarding/Onboarding';
+import Introduction from './screens/onboarding/Introduction';
 import Auth from './screens/onboarding/Auth';
 import CreateProfile from './screens/onboarding/CreateProfile';
 
@@ -21,6 +23,11 @@ import NewListing from './screens/main/NewListing';
 import Messages from './screens/main/Messages';
 import Chatbox from './screens/main/Chatbox';
 import Activity from './screens/main/Activity';
+import EditProfile from './screens/main/EditProfile';
+
+import auth from '@react-native-firebase/auth';
+
+import { setUser } from './redux/actions';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -37,9 +44,8 @@ const OnboardingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Auth">
-      <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Onboarding" component={Onboarding} />
+      initialRouteName="Introduction">
+      <Stack.Screen name="Introduction" component={Introduction} />
       <Stack.Screen name="Auth" component={Auth} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
     </Stack.Navigator>
@@ -49,29 +55,65 @@ const OnboardingNavigator = () => {
 const MainNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Search"
+      initialRouteName="Home"
       tabBar={props => <MainTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Alarm" component={Messages} />
+      <Tab.Screen name="Activity" component={Activity} />
       <Tab.Screen name="Add" component={NewListing} />
-      <Tab.Screen name="Search" component={SellerProfile} />
-      <Tab.Screen name="User" component={Activity} />
+      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen name="User" component={SellerProfile} />
     </Tab.Navigator>
   );
 };
 
-const Root = () => {
+const RootNavigatorComponent = (props) => {
+
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+
+  // Handle user state changes
+  const onAuthStateChanged = (user) => {
+    console.log(user);
+    props.setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
+  
   return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Onboarding">
+        initialRouteName={"Onboarding"}>
         <Stack.Screen name="Main" component={MainNavigator} />
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
+}
+const RootNavigator = connect(mapStateToProps, { setUser })(RootNavigatorComponent);
+
+const Root = () => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {setLoading(false)}, config.SPLASH_DELAY);
+  }, []);
+
+  if (loading)
+    return <Splash/>;
+  else
+    return <RootNavigator/>;
+}
+
+const mapStateToProps = (state) => {
+  const { user } = state.Auth;
+  return { user };
 };
 
 export default Root;

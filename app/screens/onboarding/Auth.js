@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { TabView, SceneMap, TabBar  } from 'react-native-tab-view';
 import assets from '../../assets';
@@ -17,14 +17,14 @@ const renderTabBar = props => (
 
 const Auth = (props) => {
   
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(props.route?.params?.page?props.route.params.page:1);
   const [routes] = useState([
     { key: 'login', title: 'Login' },
     { key: 'signup', title: 'Signup' },
   ]);
   const renderScene = SceneMap({
-    login: Login,
-    signup: Signup,
+    login: () => <Login setTab={setIndex} {...props} />,
+    signup: () => <Signup setTab={setIndex} {...props} />,
   });
 
   return (
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     textAlign: 'center',
-    color: '#1A1A1A'
+    color: '#1A1A1A',
   },
   tabView: {
     flex: 1,

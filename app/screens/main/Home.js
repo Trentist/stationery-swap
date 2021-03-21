@@ -79,7 +79,7 @@ const Home = (props) => {
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
             data={DATA}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             horizontal
           />
         </View>
@@ -95,7 +95,7 @@ const Home = (props) => {
             ItemSeparatorComponent={separator}
             renderItem={renderCategoryItem}
             data={DATA}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             horizontal
           />
         </View>
@@ -111,7 +111,7 @@ const Home = (props) => {
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
             data={DATA}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             horizontal
           />
         </View>

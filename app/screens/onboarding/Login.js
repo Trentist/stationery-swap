@@ -33,7 +33,7 @@ const Login = (props) => {
       </View>
       <View style={styles.bottomContainer}>
         <Text style={styles.bottomText}>By signing up, you are agree with our </Text>
-        <TextLink style={styles.bottomText} onPress={() => {console.log("link")}}>Terms & Conditions</TextLink>
+        <TextLink style={styles.bottomText} onPress={() => {}}>Terms & Conditions</TextLink>
       </View>
     </View>
   );

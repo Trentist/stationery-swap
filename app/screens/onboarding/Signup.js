@@ -1,39 +1,142 @@
-import React from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
-import {LargeButton, TextLink } from '../../components/common';
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TextInput, Pressable, Button } from 'react-native';
+import { LargeButton, TextLink, CustomModal } from '../../components/common';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import auth from '@react-native-firebase/auth';
+import { Formik } from 'formik'
+import * as yup from 'yup'
+
+const signupValidationSchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Full name is Required'),
+  email: yup
+    .string()
+    .email("Please enter valid email")
+    .required('Email Address is Required'),
+  password: yup
+    .string()
+    .min(6, ({ min }) => `Password must be at least ${min} characters`)
+    .required('Password is required'),
+  confirm: yup.string()
+    .oneOf([yup.ref('password'), null], "Passwords doesn't match")
+})
 
 const Signup = (props) => {
+
+  const [error, setError] = useState({});
+  const [busyModal, setBusyModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState("");
+  
+  const onSignUp = (values) => {
+    const { name, email, password } = values;
+
+    setBusyModal(true);
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        setBusyModal(false);
+      })
+      .catch(error => {
+        setBusyModal(false);
+        if (error.code === 'auth/email-already-in-use') {
+          setErrorModalText('That email address is already in use!');
+          setErrorModal(true);
+        }
+        else if (error.code === 'auth/invalid-email') {
+          setErrorModalText('That email address is invalid!');
+          setErrorModal(true);
+        }
+        else {
+          setErrorModalText('Unknown error occurred.');
+          setErrorModal(true);
+        }
+
+        console.error(error);
+      });
+  }
+
+  const onSignIn = () => {
+    if (props.setTab)
+      props.setTab(0);
+  }
   
   return (
+    <KeyboardAwareScrollView style={{width: '100%', height: '100%'}}>
+    
     <View style={styles.container}>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Full Name"
-      />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Email"
-      />
-      <TextInput
-        style={styles.textInput}
-        secureTextEntry
-        placeholder="Password"
-      />
-      <TextInput
-        style={styles.textInput}
-        secureTextEntry
-        placeholder="Confirm Password"
-      />
-      <View style={styles.buttonGroup}>
-        <LargeButton
-          title="SIGN UP"          
-        />
-      </View>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.bottomText}>Already have an account? </Text>
-        <TextLink style={styles.bottomText} onPress={() => {}}>Sign in</TextLink>
-      </View>
+      <Formik
+        initialValues={{ name: 'Intel', email: 'intelmin0915@gmail.com', password: '123456', confirm: '123456' }}
+        validationSchema={signupValidationSchema}
+        onSubmit={onSignUp}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+          <>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Full Name"
+            onChangeText={handleChange('name')}
+            onBlur={handleBlur('name')}
+            value={values.name}
+          />
+          <Text style={styles.error}>{errors.name}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Email"
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            value={values.email}
+            keyboardType="email-address"
+          />
+          <Text style={styles.error}>{errors.email}</Text>
+          <TextInput
+            style={styles.textInput}
+            secureTextEntry
+            placeholder="Password"
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            value={values.password}
+          />
+          <Text style={styles.error}>{errors.password}</Text>
+          <TextInput
+            style={styles.textInput}
+            secureTextEntry
+            placeholder="Confirm Password"
+            onChangeText={handleChange('confirm')}
+            onBlur={handleBlur('confirm')}
+            value={values.confirm}
+          />
+          <Text style={styles.error}>{errors.confirm}</Text>
+          <View style={styles.buttonGroup}>
+            <LargeButton
+              title="SIGN UP"
+              onPress={handleSubmit}
+            />
+          </View>
+          <View style={styles.bottomContainer}>
+            <Text style={styles.bottomText}>Already have an account? </Text>
+            <TextLink style={styles.bottomText} onPress={onSignIn}>Sign in</TextLink>
+          </View>
+        </>
+      )}
+      </Formik>
     </View>
+    <CustomModal
+      show={busyModal}
+      onClose={() => setBusyModal(false)}
+      busy={true}
+      backPress={true}
+      text="Please wait..."
+    />
+    <CustomModal
+      show={errorModal}
+      onClose={() => setErrorModal(false)}
+      backPress={true}
+      text={errorModalText}
+      okbtn={true}
+    />
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -47,11 +150,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 40,
     paddingTop: 30,
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   title: {
     fontSize: 30,
     backgroundColor: 'yellow'
+  },
+  error:{ 
+    fontSize: 12,
+    color: 'red',
+    height: 15,
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+    marginBottom: 5
   },
   textInput: {
     height: 50,
@@ -79,6 +190,24 @@ const styles = StyleSheet.create({
   bottomText: {
     textAlign: 'center',
     fontSize: 13
+  },
+  modalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flex: 1,
+  },
+  modalBody: {
+    width: '100%',
+    height: 100,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
   }
 });
 

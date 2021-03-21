@@ -13,7 +13,7 @@ const texts = [
   "Swap stationery & crafts \n with ease"
 ];
 
-const Onboarding = (props) => {
+const Introduction = (props) => {
   
   const [curpos, setCurPos] = useState(0);
   return (
@@ -37,13 +37,12 @@ const Onboarding = (props) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <LargeButton style={styles.button} title="SIGN UP" onPress={() => {console.log("button")}} />
+        <LargeButton style={styles.button} title="SIGN UP" onPress={() => {props.navigation.navigate('Auth', {page: 1})}} />
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText}>Already have an account?</Text>
-          <TextLink style={styles.bottomText} onPress={() => {props.navigation.navigate('Auth')}}>Login here!</TextLink>
+          <TextLink style={styles.bottomText} onPress={() => {props.navigation.navigate('Auth', {page: 0})}}>Login here!</TextLink>
         </View>
       </View>
-      
     </View>
   );
 };
@@ -112,4 +111,4 @@ const styles = {
   }
 };
 
-export default Onboarding;
+export default Introduction;

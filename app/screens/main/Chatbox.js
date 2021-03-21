@@ -106,7 +106,7 @@ const Chatbox = (props) => {
           style={styles.chatList}
           renderItem={renderItem}
           data={DATA}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
         />
       </View>
       <View style={styles.inputContainer}>

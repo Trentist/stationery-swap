@@ -132,7 +132,7 @@ const Activity = (props) => {
             style={styles.chatList}
             renderItem={renderItem}
             data={DATA1}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
           />
         </View>
         <View style={[styles.listContainer, styles.listBorder]}>
@@ -141,7 +141,7 @@ const Activity = (props) => {
             style={styles.chatList}
             renderItem={renderItem}
             data={DATA2}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
           />
         </View>
       </View>
