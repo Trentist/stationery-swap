@@ -1,6 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import { Input } from 'react-native-elements';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from 'react-native';
+import {Input} from 'react-native-elements';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 
@@ -48,23 +55,30 @@ const DATA = [
 ];
 
 const Home = ({navigation}) => {
-  const renderFeaturedItem = ({ item }) => (
-    
-    <Item  style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
-    
+  const renderFeaturedItem = ({item}) => (
+    <Item
+      style={styles.featured}
+      image={assets.images.samples.featured}
+      featured
+      unmarked
+      price={5}
+    />
   );
-  const renderCategoryItem = ({ item }) => (
-    <Item style={styles.category} image={assets.images.samples.category} category title="Calligraphy Cards" />
+  const renderCategoryItem = ({item}) => (
+    <Item
+      style={styles.category}
+      image={assets.images.samples.category}
+      category
+      title="Calligraphy Cards"
+    />
   );
-  const separator = () => (
-    <View style={{width: 25}}></View>
-  );
+  const separator = () => <View style={{width: 25}}></View>;
   return (
     <View style={styles.container}>
       <Input
-        placeholder='Search...'
-        leftIcon={{ type: 'font-awesome', name: 'search' }}
-        inputContainerStyle={{borderBottomWidth:0, height: '100%'}}
+        placeholder="Search..."
+        leftIcon={{type: 'font-awesome', name: 'search'}}
+        inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
         containerStyle={styles.searchBox}
         inputStyle={{fontSize: 15, paddingVertical: 0}}
       />
@@ -73,25 +87,32 @@ const Home = ({navigation}) => {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Featured</Text>
             <TouchableOpacity>
-              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
+              <Text
+                onPress={() => navigation.navigate('Category')}
+                style={styles.seeAll}>
+                See all ▶
+              </Text>
             </TouchableOpacity>
           </View>
-          
+
           <FlatList
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
             data={DATA}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             horizontal
           />
-        
         </View>
         <View style={[styles.itemsContainer, styles.categoryContainer]}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Categories</Text>
             <TouchableOpacity>
-              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
+              <Text
+                onPress={() => navigation.navigate('Category')}
+                style={styles.seeAll}>
+                See all ▶
+              </Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -99,15 +120,19 @@ const Home = ({navigation}) => {
             ItemSeparatorComponent={separator}
             renderItem={renderCategoryItem}
             data={DATA}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             horizontal
           />
         </View>
-        <View style={styles.itemsContainer, styles.followContainer}>
+        <View style={(styles.itemsContainer, styles.followContainer)}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>People you follow</Text>
             <TouchableOpacity>
-              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
+              <Text
+                onPress={() => navigation.navigate('Category')}
+                style={styles.seeAll}>
+                See all ▶
+              </Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -115,7 +140,7 @@ const Home = ({navigation}) => {
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
             data={DATA}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             horizontal
           />
         </View>
@@ -134,13 +159,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   searchBox: {
     height: 40,
     borderRadius: 20,
     backgroundColor: '#CCCCCC',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   mainContainer: {
     flex: 1,
@@ -157,34 +182,34 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   seeAll: {
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   itemList: {
     width: '100%',
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   featured: {
     width: 180,
-    height: 200
+    height: 200,
   },
   category: {
     width: 150,
-    height: 120
+    height: 120,
   },
   categoryContainer: {
-    marginTop: 10
+    marginTop: 10,
   },
   followContainer: {
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
 export default Home;

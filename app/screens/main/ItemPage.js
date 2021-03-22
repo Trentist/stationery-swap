@@ -1,12 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
-import { Input } from 'react-native-elements';
-import { SmallButton, CustomButton, TwoColumnsView } from '../../components/common';
+import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
+import {Input} from 'react-native-elements';
+import {
+  SmallButton,
+  CustomButton,
+  TwoColumnsView,
+} from '../../components/common';
 import Item from '../../components/pages/Item';
 import ChatUser from '../../components/pages/ChatUser';
 import assets from '../../assets';
 import config from '../../config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const DATA = [
   {
@@ -48,26 +52,29 @@ const DATA = [
 ];
 
 const ItemPage = ({navigation}) => {
-
   const renderItem = (item, index) => {
     return (
-      <Item 
+      <Item
         style={styles.featured}
         image={assets.images.samples.featured}
         featured
         unmarked
-        price={5} 
+        price={5}
       />
-    )
-  }  
+    );
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image style={styles.topImage} source={assets.images.samples.item} />
       <View style={styles.titleView}>
         <View style={styles.titelRowView}>
           <Text style={styles.title}>Pencil Cases</Text>
-          <TouchableOpacity onPress={()=>navigation.navigate('sellerprofile')}>
-          <Image style={styles.avatar} source={assets.images.samples.avatar2} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('sellerprofile')}>
+            <Image
+              style={styles.avatar}
+              source={assets.images.samples.avatar2}
+            />
           </TouchableOpacity>
         </View>
         <View style={[styles.titelRowView, {marginTop: 10}]}>
@@ -78,13 +85,16 @@ const ItemPage = ({navigation}) => {
       <View style={styles.messageView}>
         <View style={styles.messageBox}>
           <View style={styles.messageRowView}>
-            <Image style={styles.messageIcon} source={assets.images.icons.chat} />
+            <Image
+              style={styles.messageIcon}
+              source={assets.images.icons.chat}
+            />
             <Text style={styles.messageTitle}>Send seller a message</Text>
           </View>
-          <View style={[styles.messageRowView, {marginTop: 10}]}>      
+          <View style={[styles.messageRowView, {marginTop: 10}]}>
             <Input
               containerStyle={styles.messageInputContainer}
-              inputContainerStyle={{borderBottomWidth:0, height: '100%'}}
+              inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
               inputStyle={styles.messageInput}
             />
             <SmallButton style={styles.messageButton} title="Send" />
@@ -93,7 +103,10 @@ const ItemPage = ({navigation}) => {
       </View>
       <View style={styles.descView}>
         <Text style={styles.descTitle}>Description</Text>
-        <Text style={styles.descContent}>Hi all! I am Lisa and I’m from Toronto. I would like to arrange a swap with  someone, please send me a DM if you are interested</Text>
+        <Text style={styles.descContent}>
+          Hi all! I am Lisa and I’m from Toronto. I would like to arrange a swap
+          with someone, please send me a DM if you are interested
+        </Text>
       </View>
       <View style={styles.chatHistoryView}>
         <ChatUser
@@ -110,23 +123,21 @@ const ItemPage = ({navigation}) => {
         />
       </View>
       <View style={styles.commentView}>
-        <Image style={styles.commentAvatar} source={assets.images.samples.avatar1} />        
+        <Image
+          style={styles.commentAvatar}
+          source={assets.images.samples.avatar1}
+        />
         <Input
           containerStyle={styles.commentInputContainer}
-          inputContainerStyle={{borderBottomWidth:0, height: '100%'}}
+          inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           inputStyle={styles.commentInput}
-          rightIcon={(
-            <CustomButton style={styles.commentButton} title="Post"/>
-          )}
+          rightIcon={<CustomButton style={styles.commentButton} title="Post" />}
           placeholder="Add a comment..."
         />
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Similar Items</Text>
-        <TwoColumnsView
-          data={DATA}
-          renderItem={renderItem}
-        />
+        <TwoColumnsView data={DATA} renderItem={renderItem} />
       </View>
     </ScrollView>
   );
@@ -143,7 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   topImage: {
-    width: '100%'
+    width: '100%',
   },
   titleView: {
     width: '100%',
@@ -163,19 +174,19 @@ const styles = StyleSheet.create({
   avatar: {
     width: config.avatar_size,
     height: config.avatar_size,
-    borderRadius: config.avatar_size/2,
+    borderRadius: config.avatar_size / 2,
   },
   title: {
     fontSize: 25,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   price: {
     fontSize: 16,
-    color: '#00C569'
+    color: '#00C569',
   },
   location: {
     fontSize: 16,
-    color: '#9F9F9F'
+    color: '#9F9F9F',
   },
   messageView: {
     paddingHorizontal,
@@ -189,7 +200,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
@@ -208,21 +219,21 @@ const styles = StyleSheet.create({
   messageTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 10
+    marginLeft: 10,
   },
   messageInputContainer: {
     flex: 1,
     height: 25,
     borderRadius: 12,
-    backgroundColor: '#DDDDDD'
+    backgroundColor: '#DDDDDD',
   },
   messageInput: {
     color: 'black',
-    fontSize: 12
+    fontSize: 12,
   },
   messageButton: {
     width: 60,
-    marginLeft: 20
+    marginLeft: 20,
   },
   descView: {
     paddingHorizontal,
@@ -231,11 +242,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   descTitle: {
-    fontSize: 20
+    fontSize: 20,
   },
   descContent: {
     fontSize: 16,
-    marginTop: 10
+    marginTop: 10,
   },
   chatHistoryView: {
     borderBottomColor,
@@ -254,13 +265,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomColor,
-    borderBottomWidth: 1,    
+    borderBottomWidth: 1,
   },
   commentAvatar: {
     width: config.avatar_size,
     height: config.avatar_size,
-    borderRadius: config.avatar_size/2,
-    marginRight: 20
+    borderRadius: config.avatar_size / 2,
+    marginRight: 20,
   },
   commentInputContainer: {
     flex: 1,
@@ -272,7 +283,7 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     color: 'black',
-    fontSize: 14
+    fontSize: 14,
   },
   commentButton: {
     backgroundColor: 'transparent',
@@ -280,17 +291,17 @@ const styles = StyleSheet.create({
     color: '#F36190',
     width: 50,
     height: '100%',
-    fontSize: 14
+    fontSize: 14,
   },
   itemContainer: {
     width: '100%',
     paddingVertical: 10,
-    paddingHorizontal
+    paddingHorizontal,
   },
   itemTitle: {
     fontSize: 20,
-    marginBottom: 10
-  }, 
+    marginBottom: 10,
+  },
   itemList: {
     width: '100%',
     height: '100%',
@@ -300,11 +311,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   featured: {
     width: '48%',
-    height: 200
+    height: 200,
   },
 });
 

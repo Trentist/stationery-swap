@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-material-dropdown'
 import { ImageButton, SmallButton } from '../../components/common';
 import assets from '../../assets';
 
-const CreateProfile = (props) => {
+const CreateProfile = ({navigation}) => {
   let data = [{
     value: 'Toronto, Canada',
   }, {
@@ -14,7 +14,9 @@ const CreateProfile = (props) => {
   }];
   return (
     <View style={styles.container}>
-      <ImageButton style={styles.backButton} source={assets.images.icons.back} />
+
+      <ImageButton onPress={()=>navigation.goBack()} style={styles.backButton} source={assets.images.icons.back} />
+
       <Text style={styles.title}>Create Profile</Text>
       <View style={styles.avatarCont}>
         <TouchableOpacity style={styles.touchable}>
@@ -29,7 +31,7 @@ const CreateProfile = (props) => {
         containerStyle={styles.dropdown}
       />
       <TextInput style={[styles.textInput, {height: 120}]} placeholder="About" multiline textAlignVertical="top" />
-      <SmallButton style={{width: 100, marginTop: 20}} title="Done"/>
+      <SmallButton onPress={()=>navigation.navigate('Main')} style={{width: 100, marginTop: 20}} title="Done"/>
     </View>
   );
 };

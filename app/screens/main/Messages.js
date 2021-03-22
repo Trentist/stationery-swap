@@ -1,92 +1,91 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
-import { Input } from 'react-native-elements';
+import {View, StyleSheet, Text, FlatList} from 'react-native';
+import {Input} from 'react-native-elements';
 import ChatUser from '../../components/pages/ChatUser';
 import config from '../../config';
 import assets from '../../assets';
-import { TouchableOpacity } from 'react-native';
+import {TouchableOpacity} from 'react-native';
 
 const DATA = [
   {
     id: 1,
     avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-    date: "2d"
+    name: 'Samanta',
+    content: 'Thanks for following me!',
+    date: '2d',
   },
   {
     id: 2,
     avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-    date: "1w"
+    name: 'Lisa',
+    content: 'Hi there!',
+    date: '1w',
   },
   {
     id: 3,
     avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-    date: "2d"
+    name: 'Samanta',
+    content: 'Thanks for following me!',
+    date: '2d',
   },
   {
     id: 4,
     avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-    date: "1w"
+    name: 'Lisa',
+    content: 'Hi there!',
+    date: '1w',
   },
   {
     id: 5,
     avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-    date: "2d"
+    name: 'Samanta',
+    content: 'Thanks for following me!',
+    date: '2d',
   },
   {
     id: 6,
     avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-    date: "1w"
+    name: 'Lisa',
+    content: 'Hi there!',
+    date: '1w',
   },
   {
     id: 7,
     avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-    date: "2d"
+    name: 'Samanta',
+    content: 'Thanks for following me!',
+    date: '2d',
   },
   {
     id: 8,
     avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-    date: "1w"
+    name: 'Lisa',
+    content: 'Hi there!',
+    date: '1w',
   },
-]
+];
 
 const Messages = ({navigation}) => {
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={()=>navigation.navigate('Chatbox')}>
-    <ChatUser
-      style={styles.chatUser}
-      image={item.avatar}
-      name={item.name}
-      content={item.content}
-      date={item.date}
-    />
+  const renderItem = ({item}) => (
+    <TouchableOpacity onPress={() => navigation.navigate('Chatbox')}>
+      <ChatUser
+        style={styles.chatUser}
+        image={item.avatar}
+        name={item.name}
+        content={item.content}
+        date={item.date}
+      />
     </TouchableOpacity>
   );
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Messages</Text>
       <View style={{paddingHorizontal: 20, width: '100%'}}>
         <Input
-          placeholder='Search...'
-          leftIcon={{ type: 'font-awesome', name: 'search' }}
-          inputContainerStyle={{borderBottomWidth:0, height: '100%'}}
+          placeholder="Search..."
+          leftIcon={{type: 'font-awesome', name: 'search'}}
+          inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           containerStyle={styles.searchBox}
           inputStyle={{fontSize: 15, paddingVertical: 0}}
         />
@@ -95,7 +94,7 @@ const Messages = ({navigation}) => {
         style={styles.chatList}
         renderItem={renderItem}
         data={DATA}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );
@@ -112,23 +111,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   searchBox: {
     height: 40,
     borderRadius: 20,
     backgroundColor: '#DDDDDD',
     paddingHorizontal: 15,
-    marginTop: 20
+    marginTop: 20,
   },
   chatList: {
     flex: 1,
     width: '100%',
-    marginTop: 20
+    marginTop: 20,
   },
   chatUser: {
     paddingHorizontal,
