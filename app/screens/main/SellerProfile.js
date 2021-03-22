@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { TwoColumnsView } from '../../components/common';
+import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {TwoColumnsView} from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
-import { TouchableOpacity } from 'react-native';
+import {TouchableOpacity} from 'react-native';
 
 const DATA1 = [
   {
@@ -44,25 +44,31 @@ const DATA2 = [
 const SellerProfile = ({navigation}) => {
   const renderItem = (item, index) => {
     return (
-      <Item 
+      <Item
         style={styles.featured}
         image={assets.images.samples.featured}
         featured
         unmarked
-        price={5} 
+        price={5}
       />
-    )
-  }
+    );
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.topView}>
-        <Image style={styles.topImage} source={assets.images.samples.profile_back} />
+        <Image
+          style={styles.topImage}
+          source={assets.images.samples.profile_back}
+        />
         <View style={styles.topRowView}>
           <Image style={styles.avatar} source={assets.images.samples.avatar2} />
           <View style={styles.bageConatiner}>
             <Text style={styles.badgeText}>Following</Text>
             {/* <TouchableOpacity onPress={()=>navigation.navigate('Messages')}> */}
-            <Image  style={styles.chatIcon} source={assets.images.icons.chat_outlined} />
+            <Image
+              style={styles.chatIcon}
+              source={assets.images.icons.chat_outlined}
+            />
             {/* </TouchableOpacity> */}
           </View>
         </View>
@@ -70,28 +76,24 @@ const SellerProfile = ({navigation}) => {
       <View style={styles.titleView}>
         <Text style={styles.name}>Lisa Moore</Text>
         <Text style={styles.location}>
-          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />Toronto, Canada
+          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />
+          Toronto, Canada
         </Text>
         <Text style={styles.description}>Handmade, gardening, photography</Text>
         <Text style={styles.detail}>
           <Text style={{fontWeight: 'bold'}}>200</Text> Following
-          <Text>          </Text>
-          <Text style={{fontWeight: 'bold', marginLeft: 10}}>17.4K</Text> Followers
+          <Text> </Text>
+          <Text style={{fontWeight: 'bold', marginLeft: 10}}>17.4K</Text>{' '}
+          Followers
         </Text>
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Items to sell</Text>
-        <TwoColumnsView
-          data={DATA1}
-          renderItem={renderItem}
-        />
+        <TwoColumnsView data={DATA1} renderItem={renderItem} />
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Items looking for</Text>
-        <TwoColumnsView
-          data={DATA2}
-          renderItem={renderItem}
-        />
+        <TwoColumnsView data={DATA2} renderItem={renderItem} />
       </View>
     </ScrollView>
   );
@@ -117,17 +119,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     width: '100%',
     height: 40,
-    paddingHorizontal
+    paddingHorizontal,
   },
   topImage: {
-    width: '100%'
+    width: '100%',
   },
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
     borderWidth: 2,
-    borderColor: 'white'
+    borderColor: 'white',
   },
   bageConatiner: {
     display: 'flex',
@@ -141,12 +143,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#E35C9B',
     borderRadius: 10,
     paddingHorizontal: 20,
-    paddingVertical: 3
+    paddingVertical: 3,
   },
   chatIcon: {
     width: 20,
     height: 20,
-    marginLeft: 20
+    marginLeft: 20,
   },
   titleView: {
     paddingHorizontal,
@@ -156,34 +158,34 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   location: {
     fontSize: 14,
-    color: '#9F9F9F'
+    color: '#9F9F9F',
   },
   description: {
     fontSize: 16,
-    marginTop: 10
+    marginTop: 10,
   },
   detail: {
     fontSize: 16,
-    marginTop: 5
+    marginTop: 5,
   },
   detailView: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   itemContainer: {
     width: '100%',
     paddingVertical: 10,
-    paddingHorizontal
+    paddingHorizontal,
   },
   itemTitle: {
     fontSize: 20,
     marginBottom: 10,
-    fontWeight: 'bold'
-  }, 
+    fontWeight: 'bold',
+  },
   itemList: {
     width: '100%',
     height: '100%',
@@ -193,11 +195,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   featured: {
     width: '48%',
-    height: 200
+    height: 200,
   },
 });
 
