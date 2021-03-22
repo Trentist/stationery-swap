@@ -1,24 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import {LargeButton, TextLink, SocialButton } from '../../components/common';
-
+import {logIn} from "../../firebase/authMethods"
 const Login = ({navigation}) => {
-  
+  const [email,setEmail] = useState('')
+  const [password,setPassword] = useState('')
+
+  const LoginPressed=async()=>{
+    console.log("email:",email);
+    console.log("password:",password);
+    await logIn(email,password).then((response)=>{
+      console.log("response:",response)
+      if(response !== "error"){
+        navigation.navigate('Main')
+      }
+    }).catch((e)=>{
+      console.log("error:",e)
+    })
+  }
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.textInput}
         placeholder="Email Address"
+        onChangeText={(text)=>setEmail(text)}
       />
       <TextInput
         style={styles.textInput}
         secureTextEntry
         placeholder="Password"
+        onChangeText={(text)=>setPassword(text)}
       />
       <View style={styles.buttonGroup}>
-        <LargeButton
-          title="LOGIN"  
-          onPress={()=>navigation.navigate('Main')}
+        <LargeButton onPress={()=>{
+          console.log("login pressed")
+          LoginPressed()}}
+          title="LOGIN"          
         />
         <TextLink style={styles.forgot}>Forgot Password?</TextLink>
       </View>
