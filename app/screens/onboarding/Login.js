@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
-import {LargeButton, TextLink, SocialButton } from '../../components/common';
+import {LargeButton, TextLink, SocialButton, CustomModal } from '../../components/common';
 import {logIn} from "../../firebase/authMethods"
 const Login = ({navigation}) => {
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
+  const [busyModal, setBusyModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState('');
 
   const LoginPressed=async()=>{
-    console.log("email:",email);
-    console.log("password:",password);
+    if(email && password !== ""){
+      setBusyModal(true);
     await logIn(email,password).then((response)=>{
       console.log("response:",response)
-      if(response !== "error"){
+      setBusyModal(false);
+      if(response=="added"){
         navigation.navigate('Main')
+      } else if (response.code == 'auth/email-already-in-use') {
+        setErrorModalText('That email address is already in use!');
+        setErrorModal(true);
+    
+      } else if (response.code == 'auth/invalid-email') {
+        setErrorModalText('That email address is invalid!');
+        setErrorModal(true);
+      } 
+      else if(response.code !==undefined || response.code !== null){
+        setErrorModalText('Unknown error occurred.');
+        setErrorModal(true);
       }
-    }).catch((e)=>{
-      console.log("error:",e)
     })
+    }else{
+      setErrorModalText('Please fill all fields');
+      setErrorModal(true);
+    }
   }
 
   return (
@@ -54,6 +71,20 @@ const Login = ({navigation}) => {
         <Text style={styles.bottomText}>By signing up, you are agree with our </Text>
         <TextLink style={styles.bottomText} onPress={() => {}}>Terms & Conditions</TextLink>
       </View>
+      <CustomModal
+        show={busyModal}
+        onClose={() => setBusyModal(false)}
+        busy={true}
+        backPress={true}
+        text="Please wait..."
+      />
+      <CustomModal
+        show={errorModal}
+        onClose={() => setErrorModal(false)}
+        backPress={true}
+        text={errorModalText}
+        okbtn={true}
+      />
     </View>
   );
 };

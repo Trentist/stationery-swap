@@ -3,9 +3,11 @@ import firestore from '@react-native-firebase/firestore';
 import {Alert} from "react-native";
 
 export async function  signUp(email, pass, name) {
+  let response;
   try {
     await auth().createUserWithEmailAndPassword( email, pass);
     const currentUser = auth().currentUser;
+    response="added"
     console.log("currentUser:",currentUser)
     if(currentUser){
     const db = firestore();
@@ -21,21 +23,24 @@ export async function  signUp(email, pass, name) {
       console.error("Error adding document: ", error);
     });
     }else{
-      Alert.alert("There is something wrong! Current User Data Is Not Saved");
+      console.log("There is something wrong! Current User Data Is Not Saved");
     }
   
   } catch (err) {
-    Alert.alert("There is something wrong!!!!", err.message);
+    response=err
+    console.log("There is something wrong!!!!", err.code);
   }
+ return response
 }
 
  export async function logIn(mail, pass) {
    let response;
    try {
-    response = await auth().signInWithEmailAndPassword(mail, pass)
+    await auth().signInWithEmailAndPassword(mail, pass)
+    response="added"
    } catch (err) {
-     Alert.alert("There is something wrong!", err.message);
-     response="error"
+     console.log("There is something wrong!", err.message);
+     response=err
    }
    return response;
  }
