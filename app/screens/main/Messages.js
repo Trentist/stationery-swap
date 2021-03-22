@@ -4,6 +4,7 @@ import { Input } from 'react-native-elements';
 import ChatUser from '../../components/pages/ChatUser';
 import config from '../../config';
 import assets from '../../assets';
+import { TouchableOpacity } from 'react-native';
 
 const DATA = [
   {
@@ -64,9 +65,10 @@ const DATA = [
   },
 ]
 
-const Messages = (props) => {
+const Messages = ({navigation}) => {
 
   const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={()=>navigation.navigate('Chatbox')}>
     <ChatUser
       style={styles.chatUser}
       image={item.avatar}
@@ -74,6 +76,7 @@ const Messages = (props) => {
       content={item.content}
       date={item.date}
     />
+    </TouchableOpacity>
   );
   
   return (

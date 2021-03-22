@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import assets from '../../assets';
+import { useNavigation } from '@react-navigation/native';
 
 const Item = (props) => {
   const style = props.style;
+  const navigation = useNavigation();
 
   return (
-    <TouchableOpacity style={[styles.container, style]} activeOpacity={0.7}>
+    <TouchableOpacity onPress={()=>navigation.navigate('ItemPage')} style={[styles.container, style]} activeOpacity={0.7}>
       <Image
         style={styles.image}
         source={props.image}

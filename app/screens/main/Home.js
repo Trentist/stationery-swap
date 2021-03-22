@@ -47,9 +47,11 @@ const DATA = [
   },
 ];
 
-const Home = (props) => {
+const Home = ({navigation}) => {
   const renderFeaturedItem = ({ item }) => (
-    <Item style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
+    
+    <Item  style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
+    
   );
   const renderCategoryItem = ({ item }) => (
     <Item style={styles.category} image={assets.images.samples.category} category title="Calligraphy Cards" />
@@ -71,9 +73,10 @@ const Home = (props) => {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Featured</Text>
             <TouchableOpacity>
-              <Text style={styles.seeAll}>See all ▶</Text>
+              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
             </TouchableOpacity>
           </View>
+          
           <FlatList
             style={styles.itemList}
             ItemSeparatorComponent={separator}
@@ -82,12 +85,13 @@ const Home = (props) => {
             keyExtractor={item => item.id.toString()}
             horizontal
           />
+        
         </View>
         <View style={[styles.itemsContainer, styles.categoryContainer]}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Categories</Text>
             <TouchableOpacity>
-              <Text style={styles.seeAll}>See all ▶</Text>
+              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -103,7 +107,7 @@ const Home = (props) => {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>People you follow</Text>
             <TouchableOpacity>
-              <Text style={styles.seeAll}>See all ▶</Text>
+              <Text onPress={()=>navigation.navigate('Category')} style={styles.seeAll}>See all ▶</Text>
             </TouchableOpacity>
           </View>
           <FlatList

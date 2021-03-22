@@ -4,6 +4,7 @@ import { Input } from 'react-native-elements';
 import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
+import { TouchableWithoutFeedback } from 'react-native';
 
 const DATA = [
   {
@@ -49,7 +50,7 @@ const DATA = [
 ];
 
 
-const Category = (props) => {
+const Category = ({navigation}) => {
   const renderItem = ({ item }) => (
     <Item style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
   );
@@ -59,7 +60,9 @@ const Category = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleBar}>
-        <ImageButton style={styles.backButton} source={assets.images.icons.back} />
+    
+        <ImageButton onPress={()=>navigation.goBack()}  style={styles.backButton} source={assets.images.icons.back} />
+       
         <Input
           placeholder='Search...'
           leftIcon={{ type: 'font-awesome', name: 'search' }}

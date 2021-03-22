@@ -6,6 +6,7 @@ import Item from '../../components/pages/Item';
 import ChatUser from '../../components/pages/ChatUser';
 import assets from '../../assets';
 import config from '../../config';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DATA = [
   {
@@ -46,7 +47,7 @@ const DATA = [
   },
 ];
 
-const ItemPage = (props) => {
+const ItemPage = ({navigation}) => {
 
   const renderItem = (item, index) => {
     return (
@@ -65,7 +66,9 @@ const ItemPage = (props) => {
       <View style={styles.titleView}>
         <View style={styles.titelRowView}>
           <Text style={styles.title}>Pencil Cases</Text>
+          <TouchableOpacity onPress={()=>navigation.navigate('sellerprofile')}>
           <Image style={styles.avatar} source={assets.images.samples.avatar2} />
+          </TouchableOpacity>
         </View>
         <View style={[styles.titelRowView, {marginTop: 10}]}>
           <Text style={styles.price}>$15</Text>

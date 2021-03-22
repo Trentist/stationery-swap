@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import {LargeButton, TextLink, SocialButton } from '../../components/common';
 
-const Login = (props) => {
+const Login = ({navigation}) => {
   
   return (
     <View style={styles.container}>
@@ -17,7 +17,8 @@ const Login = (props) => {
       />
       <View style={styles.buttonGroup}>
         <LargeButton
-          title="LOGIN"          
+          title="LOGIN"  
+          onPress={()=>navigation.navigate('Main')}
         />
         <TextLink style={styles.forgot}>Forgot Password?</TextLink>
       </View>

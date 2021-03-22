@@ -58,11 +58,13 @@ const MainNavigator = () => {
       initialRouteName="Home"
       tabBar={props => <MainTabBar {...props} />}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Activity" component={Activity} />
       <Tab.Screen name="Add" component={NewListing} />
       <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="User" component={SellerProfile} />
+      <Tab.Screen name="User" component={EditProfile} />
+     
+      
     </Tab.Navigator>
   );
 };
@@ -115,5 +117,38 @@ const mapStateToProps = (state) => {
   const { user } = state.Auth;
   return { user };
 };
+
+//Stack for HomeTab
+
+const StackH = createStackNavigator();
+const HomeStack = () => {
+  return (
+    <StackH.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Introduction">
+      <StackH.Screen name="Home" component={Home} />
+      <StackH.Screen name="Category" component={Category} />
+      <StackH.Screen name="ItemPage" component={ItemPage} />
+      <StackH.Screen name="sellerprofile" component={SellerProfile} />
+     
+    </StackH.Navigator>
+  );
+};
+
+//Stack for Seeler Profile Tab for chatting
+const StackE = createStackNavigator();
+const ChatStack = () => {
+  return (
+    <StackC.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Introduction">
+      <StackC.Screen name="Editprofile" component={EditProfile} />
+      
+     
+    </StackC.Navigator>
+  );
+};
+
+
 
 export default Root;

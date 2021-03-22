@@ -59,7 +59,7 @@ const DATA = [
   },
 ]
 
-const Chatbox = (props) => {
+const Chatbox = ({navigation}) => {
   
   const renderItem = ({ item }) => {
     const alignStyle = {justifyContent: item.left?'flex-start':'flex-end'};
@@ -92,7 +92,7 @@ const Chatbox = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleBar}>
-        <ImageButton style={styles.backButton} source={assets.images.icons.back} />
+        <ImageButton onPress={()=>navigation.goBack()} style={styles.backButton} source={assets.images.icons.back} />
         <ChatUser
           style={styles.chatUser}
           image={assets.images.samples.avatar2}

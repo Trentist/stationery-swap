@@ -5,6 +5,7 @@ import { TwoColumnsView } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
+import { TouchableOpacity } from 'react-native';
 
 const DATA1 = [
   {
@@ -40,7 +41,7 @@ const DATA2 = [
   },
 ];
 
-const SellerProfile = (props) => {
+const SellerProfile = ({navigation}) => {
   const renderItem = (item, index) => {
     return (
       <Item 
@@ -60,7 +61,9 @@ const SellerProfile = (props) => {
           <Image style={styles.avatar} source={assets.images.samples.avatar2} />
           <View style={styles.bageConatiner}>
             <Text style={styles.badgeText}>Following</Text>
-            <Image style={styles.chatIcon} source={assets.images.icons.chat_outlined} />
+            {/* <TouchableOpacity onPress={()=>navigation.navigate('Messages')}> */}
+            <Image  style={styles.chatIcon} source={assets.images.icons.chat_outlined} />
+            {/* </TouchableOpacity> */}
           </View>
         </View>
       </View>
