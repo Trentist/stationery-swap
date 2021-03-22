@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown'
 import { ImageButton, SmallButton } from '../../components/common';
 import assets from '../../assets';
+import * as ImagePicker from 'react-native-image-picker';
 
 const CreateProfile = ({navigation}) => {
+  const [selectedPictureUri,setSelectedPictureUri]=useState("")
   let data = [{
     value: 'Toronto, Canada',
   }, {
@@ -12,6 +14,29 @@ const CreateProfile = ({navigation}) => {
   }, {
     value: 'New York, US',
   }];
+
+  const options = {
+    mediaType: 'photo',
+    includeBase64: false,
+    maxHeight: 200,
+    maxWidth: 200,
+  };
+  
+  const selectImage=()=>{
+  ImagePicker.launchImageLibrary(options, (response) => {
+    console.log('Response = ', response);
+  
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (response.error) {
+      console.log('ImagePicker Error: ', response.error);
+    } else {
+      console.log("response:",response)
+        setSelectedPictureUri(response)
+    }
+    });
+  }
+
   return (
     <View style={styles.container}>
 
@@ -19,8 +44,15 @@ const CreateProfile = ({navigation}) => {
 
       <Text style={styles.title}>Create Profile</Text>
       <View style={styles.avatarCont}>
-        <TouchableOpacity style={styles.touchable}>
-          <Image style={{width: 45, height: 40}} source={assets.images.icons.uploadIcon} />
+        <TouchableOpacity style={styles.touchable} onPress={selectImage}>
+        {selectedPictureUri=="" ? 
+          <Image style={{width: 45, height: 40}} 
+            source={assets.images.icons.uploadIcon} 
+            />
+          :<Image style={{width: 140, height: 140,borderRadius:70}}
+            source={{uri: selectedPictureUri.uri}}
+            />
+          }
         </TouchableOpacity>
       </View>
       <Text style={styles.description}>Choose your Avatar</Text>
