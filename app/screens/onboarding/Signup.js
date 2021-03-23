@@ -12,6 +12,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import auth from '@react-native-firebase/auth';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {signUp} from "../../firebase/authMethods"
 
 const signupValidationSchema = yup.object().shape({
   name: yup.string().required('Full name is Required'),
@@ -34,34 +35,27 @@ const Signup = ({navigation}) => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorModalText, setErrorModalText] = useState('');
 
-  const onSignUp = (values) => {
+  const onSignUp = async(values) => {
     const {name, email, password} = values;
 
     setBusyModal(true);
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
+    await signUp(email, password,name)
+      .then((response) => {
         setBusyModal(false);
-        navigation.navigate('CreateProfile')
-        
-      })
-      .catch((error) => {
-        setBusyModal(false);
-        if (error.code === 'auth/email-already-in-use') {
+        if(response=="added"){
+          navigation.navigate('CreateProfile')
+        } else if (response.code === 'auth/email-already-in-use') {
           setErrorModalText('That email address is already in use!');
           setErrorModal(true);
       
-        } else if (error.code === 'auth/invalid-email') {
+        } else if (response.code === 'auth/invalid-email') {
           setErrorModalText('That email address is invalid!');
           setErrorModal(true);
         
-        } else {
+        } else if(response.code !==undefined && response.code!==null){
           setErrorModalText('Unknown error occurred.');
           setErrorModal(true);
-         
         }
-
-        console.error(error);
       });
   };
 

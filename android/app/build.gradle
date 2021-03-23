@@ -187,6 +187,11 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     // implementation(project(":react-native-community_google-signin")) // <--- add this dependency
+
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    
+    implementation 'com.google.firebase:firebase-analytics'
+
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     //   implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'

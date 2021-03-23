@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements'
+import config from '../../config';
 
 function MyTabBar({ state, navigation }) {
   
@@ -17,7 +18,7 @@ function MyTabBar({ state, navigation }) {
       {tabs.map((tab, index) => {
 
         const isFocused = state.index === index;
-        const tabColor = isFocused ? '#D0A0BA' : '#777777';
+        const tabColor = isFocused ? config.themeColor : '#777777';
 
         const onPress = () => {
           const event = navigation.emit({

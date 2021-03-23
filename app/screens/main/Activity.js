@@ -56,58 +56,6 @@ const DATA1 = [
   },
 ]
 
-
-const DATA2 = [
-  {
-    id: 1,
-    avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-  },
-  {
-    id: 2,
-    avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-  },
-  {
-    id: 3,
-    avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-  },
-  {
-    id: 4,
-    avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-  },
-  {
-    id: 5,
-    avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-  },
-  {
-    id: 6,
-    avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-  },
-  {
-    id: 7,
-    avatar: assets.images.samples.avatar1,
-    name: "Samanta",
-    content: "Thanks for following me!",
-  },
-  {
-    id: 8,
-    avatar: assets.images.samples.avatar2,
-    name: "Lisa",
-    content: "Hi there!",
-  },
-]
-
 const Activity = (props) => {
 
   const renderItem = ({ item }) => (
@@ -127,20 +75,11 @@ const Activity = (props) => {
       <Text style={styles.title}>Activity</Text>
       <View style={styles.mainContainer}>
         <View style={styles.listContainer}>
-          <Text style={styles.listTitle}>This week</Text>
+          <Text style={styles.listTitle}>Recent</Text>
           <FlatList
             style={styles.chatList}
             renderItem={renderItem}
             data={DATA1}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View>
-        <View style={[styles.listContainer, styles.listBorder]}>
-          <Text style={styles.listTitle}>This month</Text>
-          <FlatList
-            style={styles.chatList}
-            renderItem={renderItem}
-            data={DATA2}
             keyExtractor={item => item.id.toString()}
           />
         </View>

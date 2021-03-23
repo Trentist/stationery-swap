@@ -76,14 +76,14 @@ const EditProfile = (props) => {
         </Text>
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.itemTitle}>Items to sell</Text>
+        <Text style={styles.itemTitle}>Outgoing</Text>
         <TwoColumnsView
           data={DATA1}
           renderItem={renderItem}
         />
       </View>
       <View style={styles.itemContainer}>
-        <Text style={styles.itemTitle}>Items looking for</Text>
+        <Text style={styles.itemTitle}>Looking for</Text>
         <TwoColumnsView
           data={DATA2}
           renderItem={renderItem}
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 12,
-    backgroundColor: '#E35C9B',
+    backgroundColor: config.themeColor,
     borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 3

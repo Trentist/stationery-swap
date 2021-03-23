@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
+import config from '../../config';
 
 export default CustomButton = (props) => {
 
@@ -12,10 +13,10 @@ export default CustomButton = (props) => {
       justifyContent: 'center',
       width: (style.width ? style.width: '100%'),
       height: (style.height ? style.height: 50),
-      borderColor: (style.borderColor? style.borderColor : '#F36190'),
+      borderColor: (style.borderColor? style.borderColor : config.themeColor),
       borderRadius: (style.borderRadius? style.borderRadius : 0),
       borderWidth: (style.borderWidth? style.borderWidth : 0),
-      backgroundColor: (style.backgroundColor? style.backgroundColor : '#F36190'),
+      backgroundColor: (style.backgroundColor? style.backgroundColor : config.themeColor),
       marginLeft: (style.marginLeft ? style.marginLeft : 0),
       marginRight: (style.marginRight ? style.marginRight : 0),
       marginTop: (style.marginTop ? style.marginTop : 0),

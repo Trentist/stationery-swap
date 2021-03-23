@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Text } from 'react-native';
+import config from '../../config';
 
 export default TextLink = (props) => {
 
@@ -10,7 +11,7 @@ export default TextLink = (props) => {
     text: {
       fontWeight: (style.fontWeight? style.fontWeight: "600"),
       fontSize: (style.fontSize? style.fontSize: 12),
-      color: (style.color ? style.color : "#F36190"),
+      color: (style.color ? style.color : config.themeColor),
     },
   };
   
