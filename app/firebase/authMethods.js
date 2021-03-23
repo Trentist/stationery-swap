@@ -113,8 +113,8 @@ export async function  updateProfileInfo(profileImage,profileName,location,descr
 }
 
 export async function  getUserInfo() {
+  let user=[];
   try {
-  let user=[]
     const currentUser = auth().currentUser;
     if(currentUser){
       let snapshot = await firestore()
@@ -122,19 +122,25 @@ export async function  getUserInfo() {
       .where('uid', '==', currentUser.uid)
       .get();
       
-      snapshot.forEach(doc => {
+    snapshot.forEach((doc) => {
           user.push({
             email: doc.data().email,
             key: doc.id,
-            name: doc.data().name,
+            ProfileName: doc.data().ProfileName,
+            imageUrl : doc.data().ProfileImage,
+            location : doc.data().location,
+            description:doc.data().description
           });
         });
-      console.log("user:",user)
-      return user;     
+
+      const url=await storage().ref(user[0].imageUrl).getDownloadURL();
+      user[0].imageUrl=url
+       console.log("user is:",user)     
     }else{
-      Alert.alert("Current User Token is Expired");
+      console.log("Current User Token is Expired");
     }
   } catch (err) {
-    Alert.alert("There is something wrong!!!!", err.message);
+    console.log("There is something wrong!!!!", err.message);
   }
+  return user
 }
