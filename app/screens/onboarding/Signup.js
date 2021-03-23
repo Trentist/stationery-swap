@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {LargeButton, TextLink, CustomModal} from '../../components/common';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import auth from '@react-native-firebase/auth';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {signUp} from "../../firebase/authMethods"
@@ -43,7 +42,10 @@ const Signup = ({navigation}) => {
       .then((response) => {
         setBusyModal(false);
         if(response=="added"){
-          navigation.navigate('CreateProfile')
+          navigation.reset({
+            index:0,
+            routes:[{name:'CreateProfile'}]
+          })
         } else if (response.code === 'auth/email-already-in-use') {
           setErrorModalText('That email address is already in use!');
           setErrorModal(true);

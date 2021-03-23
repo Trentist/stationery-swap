@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { TwoColumnsView } from '../../components/common';
+import { TwoColumnsView ,CustomModal} from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
+import {getUserInfo} from "../../firebase/authMethods"
 
 const DATA1 = [
   {
@@ -41,6 +42,29 @@ const DATA2 = [
 ];
 
 const EditProfile = (props) => {
+  const [userInfo,setUserInfo] = useState('')
+  const [busyModal, setBusyModal] = useState(true);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState('');
+
+  useEffect(()=>{
+    fetchUserInfo()
+  },[])
+
+  const fetchUserInfo=async()=>{
+    await getUserInfo().then((response)=>{
+      setBusyModal(false);
+      console.log("response:",response.length)
+      if(response.length<=0){
+        console.log("response:",response.length)
+        setErrorModalText('Unknown error occurred.');
+        setErrorModal(true);
+      } else {
+        setUserInfo(response)
+      }
+    })
+  }
+
   const renderItem = (item, index) => {
     return (
       <Item 
@@ -57,18 +81,19 @@ const EditProfile = (props) => {
       <View style={styles.topView}>
         <Image style={styles.topImage} source={assets.images.samples.profile_back} />
         <View style={styles.topRowView}>
-          <Image style={styles.avatar} source={assets.images.samples.avatar2} />
+          <Image style={styles.avatar} source={userInfo=='' ? assets.images.icons.uploadIcon :{uri: userInfo[0].imageUrl}} />
           <View style={styles.bageConatiner}>
             <Text style={styles.badgeText}>Edit Profile</Text>
           </View>
         </View>
+       
       </View>
       <View style={styles.titleView}>
-        <Text style={styles.name}>Marissa Carrey</Text>
+        <Text style={styles.name}>{userInfo=='' ? "Name":userInfo[0].ProfileName}</Text>
         <Text style={styles.location}>
-          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />Toronto, Canada
+          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />{userInfo=='' ? "location":userInfo[0].location}
         </Text>
-        <Text style={styles.description}>Handmade, gardening, photography</Text>
+        <Text style={styles.description}>{userInfo=='' ? "description" : userInfo[0].description}</Text>
         <Text style={styles.detail}>
           <Text style={{fontWeight: 'bold'}}>200</Text> Following
           <Text>          </Text>
@@ -89,6 +114,20 @@ const EditProfile = (props) => {
           renderItem={renderItem}
         />
       </View>
+      <CustomModal
+        show={busyModal}
+        onClose={() => setBusyModal(false)}
+        busy={true}
+        backPress={true}
+        text="Please wait..."
+      />
+      <CustomModal
+        show={errorModal}
+        onClose={() => setErrorModal(false)}
+        backPress={true}
+        text={errorModalText}
+        okbtn={true}
+      />
     </ScrollView>
   );
 };
