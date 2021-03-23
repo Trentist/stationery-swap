@@ -63,8 +63,6 @@ const MainNavigator = () => {
       <Tab.Screen name="Add" component={NewListing} />
       <Tab.Screen name="Search" component={Search} />
       <Tab.Screen name="User" component={EditProfile} />
-     
-      
     </Tab.Navigator>
   );
 };
@@ -92,7 +90,7 @@ const RootNavigatorComponent = (props) => {
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={"Onboarding"}>
+        initialRouteName="Onboarding">
         <Stack.Screen name="Main" component={MainNavigator} />
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       </Stack.Navigator>

@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { TabView, SceneMap, TabBar  } from 'react-native-tab-view';
 import assets from '../../assets';
+import config from '../../config';
 import Login from './Login';
 import Signup from './Signup';
 
 const renderTabBar = props => (
   <TabBar
     {...props}
-    indicatorStyle={{ backgroundColor: '#F36190' }}
+    indicatorStyle={{ backgroundColor: config.themeColor }}
     style={styles.tabBar}
     labelStyle={styles.tabLabel}
     pressColor="#CCCCCC"
@@ -17,7 +18,7 @@ const renderTabBar = props => (
 
 const Auth = (props) => {
   
-  const [index, setIndex] = useState(props.route?.params?.page?props.route.params.page:1);
+  const [index, setIndex] = useState(props.route?.params?.page?props.route.params.page:0);
   const [routes] = useState([
     { key: 'login', title: 'Login' },
     { key: 'signup', title: 'Signup' },
@@ -29,7 +30,8 @@ const Auth = (props) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} width={154} height={70} source={assets.images.app_text_logo} />
+      {/* <Image style={styles.logo} width={154} height={70} source={assets.images.app_text_logo} /> */}
+      <Text style={styles.logoText}>statioinery{'\n'}swap</Text>
       <View style={styles.textCont}>
         <Text style={styles.title}>Discover new stationery and crafts to trade and buy</Text>
       </View>
@@ -52,6 +54,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoText: {
+    marginTop: 40,
+    marginBottom: 5,
+    fontFamily: 'SweetApricot',
+    fontSize: 50,
+    textAlign: 'center',
   },
   logo: {
     marginTop: 40,

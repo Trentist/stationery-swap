@@ -4,7 +4,6 @@ import { Input } from 'react-native-elements';
 import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
-import { TouchableWithoutFeedback } from 'react-native';
 
 const DATA = [
   {

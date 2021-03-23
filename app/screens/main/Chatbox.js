@@ -72,14 +72,12 @@ const Chatbox = ({navigation}) => {
   const renderItem = ({item}) => {
     const alignStyle = {justifyContent: item.left ? 'flex-start' : 'flex-end'};
     const leftTextStyle = {
-      backgroundColor: 'white',
-      borderWidth: 1,
-      borderColor: '#555555',
-      color: '#555555',
+      backgroundColor: '#DDDDDD',
+      color: 'black',
     };
     const rightTextStyle = {
-      backgroundColor: '#C8C8C8',
-      color: 'black',
+      backgroundColor: '#5473a7',
+      color: 'white',
       borderWidth: 0,
     };
     return (

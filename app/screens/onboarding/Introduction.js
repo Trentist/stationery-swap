@@ -6,6 +6,7 @@ import ImageSlider from '../../components/common/ImageSlider';
 
 
 import assets from '../../assets';
+import config from '../../config';
 
 const texts = [
   "Discover new stationery & crafts to trade and buy.",
@@ -24,8 +25,8 @@ const Introduction = (props) => {
       <View style={styles.slider}>
         <ImageSlider
           images={assets.images.onboarding_images}
-          dotColor="#E55A86"
-          imageLoadingColor="#E55A86"
+          dotColor={config.themeColor}
+          imageLoadingColor={config.themeColor}
           resizeMethod={'resize'}
           resizeMode={'stretch'}
           ImageComponentStyle={styles.imageComponent}
@@ -74,7 +75,7 @@ const styles = {
     width: 12,
     height: 12,
     borderRadius: 6,
-    borderColor: '#E55A86',
+    borderColor: config.themeColor,
     borderWidth: 2,
     marginHorizontal: -3,
     padding: 0,

@@ -132,19 +132,19 @@ const styles = StyleSheet.create({
   loginWith: {
     color: '#9D9D9D',
     fontSize: 12,
-    marginTop: 20
+    marginTop: 10
   },
   socialCont: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: 10
+    marginTop: 5
   },
   socialButton: {
     marginLeft: 10,
     marginRight: 10
   },
   bottomContainer: {
-    marginTop: 10,
+    marginTop: 5,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center'
