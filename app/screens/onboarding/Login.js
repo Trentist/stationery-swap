@@ -16,7 +16,10 @@ const Login = ({navigation}) => {
       console.log("response:",response)
       setBusyModal(false);
       if(response=="added"){
-        navigation.navigate('Main')
+        navigation.reset({
+          index:0,
+          routes:[{name:'Main'}]
+        })
       } else if (response.code == 'auth/email-already-in-use') {
         setErrorModalText('That email address is already in use!');
         setErrorModal(true);
