@@ -47,7 +47,7 @@ const Login = ({navigation}) => {
   };
   function onAuthStateChanged(user) {
     setUser(user);
-    console.log(user);
+    console.log("auth for the gmail",user);
     
       if(user)
       {
@@ -67,8 +67,8 @@ const Login = ({navigation}) => {
         '583315892753-k3r3uqvo2gepl8sf89me5dkk32cldhn7.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    // const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    // return subscriber; // unsubscribe on unmount
   }, []);
 
   //Google Signout

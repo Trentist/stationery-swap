@@ -5,7 +5,8 @@ import { TwoColumnsView ,CustomModal} from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
-import {getUserInfo} from "../../firebase/authMethods"
+import {getUserInfo,loggingOut} from "../../firebase/authMethods"
+import { TouchableOpacity } from 'react-native';
 
 const DATA1 = [
   {
@@ -41,7 +42,7 @@ const DATA2 = [
   },
 ];
 
-const EditProfile = (props) => {
+const EditProfile = ({navigation}) => {
   const [userInfo,setUserInfo] = useState('')
   const [busyModal, setBusyModal] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
@@ -65,6 +66,16 @@ const EditProfile = (props) => {
     })
   }
 
+  const logoutUser=async()=>{
+    await loggingOut().then(()=>{
+        navigation.reset({
+          index:0,
+          routes:[{name:'Onboarding'}]
+        })  
+      }
+    )
+  } 
+
   const renderItem = (item, index) => {
     return (
       <Item 
@@ -82,6 +93,9 @@ const EditProfile = (props) => {
         <Image style={styles.topImage} source={assets.images.samples.profile_back} />
         <View style={styles.topRowView}>
           <Image style={styles.avatar} source={userInfo=='' ? assets.images.icons.uploadIcon :{uri: userInfo[0].imageUrl}} />
+          <TouchableOpacity style={styles.bageConatiner} onPress={()=>{logoutUser()}}>
+            <Text style={styles.badgeText}>logout</Text>
+          </TouchableOpacity>
           <View style={styles.bageConatiner}>
             <Text style={styles.badgeText}>Edit Profile</Text>
           </View>

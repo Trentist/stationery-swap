@@ -74,7 +74,7 @@ const RootNavigatorComponent = (props) => {
 
   // Handle user state changes
   const onAuthStateChanged = (user) => {
-    console.log(user);
+    console.log("user in the route:",user);
     props.setUser(user);
     if (initializing) setInitializing(false);
   }
