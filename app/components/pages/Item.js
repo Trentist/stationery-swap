@@ -8,7 +8,11 @@ const Item = (props) => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity onPress={()=>navigation.navigate('ItemPage')} style={[styles.container, style]} activeOpacity={0.7}>
+    <TouchableOpacity onPress={()=>{
+      console.log("item",props.item)
+      navigation.navigate('ItemPage',{
+      itemInfo:props.item
+    })}} style={[styles.container, style]} activeOpacity={0.7}>
       <Image
         style={styles.image}
         source={props.image}

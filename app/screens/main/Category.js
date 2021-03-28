@@ -5,54 +5,23 @@ import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d78',
-    title: 'Third Item',
-  },
-];
+const Category = ({navigation,route}) => {
+  const {products} = route.params;
 
+  const renderItem = ({ item }) => {
+  const {imageArray,isFollowed,price}=item
+  return (
+    <Item
+      style={styles.featured}
+      image={{uri:imageArray[0]}}
+      featured
+      item
+      marked={isFollowed}
+      price={price}
+    />
+    );
+  }
 
-const Category = ({navigation}) => {
-  const renderItem = ({ item }) => (
-    <Item style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
-  );
   const separator = () => (
     <View style={{width: 20, height: 15}}></View>
   );
@@ -76,8 +45,8 @@ const Category = ({navigation}) => {
           style={styles.itemList}
           ItemSeparatorComponent={separator}
           renderItem={renderItem}
-          data={DATA}
-          keyExtractor={item => item.id.toString()}
+          data={products}
+          keyExtractor={item => item.key.toString()}
           numColumns={2}
           columnWrapperStyle={{justifyContent: 'space-between'}}
         />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,70 +8,102 @@ import {
   ScrollView,
 } from 'react-native';
 import {Input} from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
+import {getProducts} from '../../firebase/productMethods';
+import {getfolloweditems} from '../../firebase/ratingMethods'
+import {CustomModal} from '../../components/common';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d78',
-    title: 'Third Item',
-  },
-];
+const categories = [{
+  value: 'School',
+}, {
+  value: 'Home',
+}, {
+  value: 'Great',
+}];
 
 const Home = ({navigation}) => {
-  const renderFeaturedItem = ({item}) => (
+  const [busyModal, setBusyModal] = useState(true);
+  const [featureProducts,setFeatureProducts] = useState([])
+  const [followedProducts,setfollowedProducts] = useState([])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProducts()
+  }, [])
+  );
+
+  const fetchProducts=async()=>{
+    await getProducts().then(async(response)=>{
+    console.log("response:",response)
+    await getfolloweditems().then((responsed)=>{
+      console.log("followed items",responsed)
+      let followed=[];  
+      let result = response.map((el)=> {
+        let obj = Object.assign({...el});
+        obj.isFollowed = responsed.some((selectedItem)=> {
+          console.log("item key:",obj.key)
+          if(selectedItem.followCount==0){
+            return false
+          }
+          return selectedItem.ItemId === obj.key
+        })
+        return obj;
+      })
+      
+      result.forEach((item)=>{
+       if(item.isFollowed){
+        followed.push(item)
+       }
+      })
+      setFeatureProducts(result)
+      setfollowedProducts(followed)
+      setBusyModal(false);
+    })   
+    })
+  }
+
+  const renderFeaturedItem = ({item}) => {
+    const {imageArray,isFollowed,price}=item
+  return (
     <Item
       style={styles.featured}
-      image={assets.images.samples.featured}
+      image={{uri:imageArray[0]}}
       featured
-      unmarked
-      price={5}
+      item={item}
+      marked={isFollowed}
+      price={price}
     />
-  );
-  const renderCategoryItem = ({item}) => (
-    <Item
-      style={styles.category}
-      image={assets.images.samples.category}
-      category
-      title="Calligraphy Cards"
-    />
-  );
+    );
+  }
+
+  const renderCategoryItem = ({item}) => {
+    const {value} = item 
+    let topItem = featureProducts[0];
+    let count=0
+    featureProducts.forEach((item)=>{
+    if(value == item.category){
+      ++count
+      if(topItem.rating <= item.rating){  
+      topItem=item
+      }
+    }
+    })
+    if(count>=1){
+    const {imageArray} = topItem 
+    return (
+      <Item
+        style={styles.category}
+        image={{uri:imageArray[0]}}
+        item={topItem}
+        category
+        title={value}
+        />
+      );
+    }
+  }
+
   const separator = () => <View style={{width: 25}}></View>;
   return (
     <View style={styles.container}>
@@ -82,13 +114,25 @@ const Home = ({navigation}) => {
         containerStyle={styles.searchBox}
         inputStyle={{fontSize: 15, paddingVertical: 0}}
       />
-      <ScrollView style={styles.mainContainer}>
+      {busyModal ?
+      (
+        <CustomModal
+        show={busyModal}
+        onClose={() => setBusyModal(false)}
+        busy={true}
+        backPress={true}
+        text="Please wait..."
+      />
+        ) : (
+      <ScrollView style={styles.mainContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.itemsContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Featured</Text>
             <TouchableOpacity>
               <Text
-                onPress={() => navigation.navigate('Category')}
+                onPress={() => navigation.navigate('Category',{
+                  products:featureProducts
+                })}
                 style={styles.seeAll}>
                 See all ▶
               </Text>
@@ -99,8 +143,9 @@ const Home = ({navigation}) => {
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            data={featureProducts}
+            keyExtractor={(item) => item.key.toString()}
             horizontal
           />
         </View>
@@ -119,8 +164,9 @@ const Home = ({navigation}) => {
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderCategoryItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            data={categories}
+            keyExtractor={(item,index) => index.toString()}
             horizontal
           />
         </View>
@@ -129,7 +175,9 @@ const Home = ({navigation}) => {
             <Text style={styles.title}>People you follow</Text>
             <TouchableOpacity>
               <Text
-                onPress={() => navigation.navigate('Category')}
+                onPress={() => navigation.navigate('Category',{
+                  products:followedProducts
+                })}
                 style={styles.seeAll}>
                 See all ▶
               </Text>
@@ -139,12 +187,15 @@ const Home = ({navigation}) => {
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            data={followedProducts}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.key.toString()}
             horizontal
           />
         </View>
       </ScrollView>
+       )
+       }
     </View>
   );
 };

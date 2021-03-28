@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
 import {Input} from 'react-native-elements';
 import {
@@ -11,6 +11,7 @@ import ChatUser from '../../components/pages/ChatUser';
 import assets from '../../assets';
 import config from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {viewedItem} from "../../firebase/ratingMethods"
 
 const DATA = [
   {
@@ -51,7 +52,21 @@ const DATA = [
   },
 ];
 
-const ItemPage = ({navigation}) => {
+const ItemPage = ({navigation,route}) => {
+  const {key,imageArray,title,location,price,description,followCount,viewCount,rating} =route.params.itemInfo;
+  
+  useEffect(()=>{
+    increaseCount()
+  },[])
+
+  const increaseCount=async()=>{
+   const viewsValue=viewCount+1
+   const ratingValue=(viewsValue+followCount)/2
+   await viewedItem(key,viewsValue,ratingValue).then((response)=>{
+    console.log("response in increase count:",response)
+   })
+  }
+
   const renderItem = (item, index) => {
     return (
       <Item
@@ -65,10 +80,10 @@ const ItemPage = ({navigation}) => {
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image style={styles.topImage} source={assets.images.samples.item} />
+      <Image style={styles.topImage} source={{uri:imageArray[0]}} />
       <View style={styles.titleView}>
         <View style={styles.titelRowView}>
-          <Text style={styles.title}>Pencil Cases</Text>
+          <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('sellerprofile')}>
             <Image
@@ -78,8 +93,8 @@ const ItemPage = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={[styles.titelRowView, {marginTop: 10}]}>
-          <Text style={styles.price}>$15</Text>
-          <Text style={styles.location}>Tronto, Canada</Text>
+          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.location}>{location}</Text>
         </View>
       </View>
       <View style={styles.messageView}>
@@ -104,8 +119,7 @@ const ItemPage = ({navigation}) => {
       <View style={styles.descView}>
         <Text style={styles.descTitle}>Description</Text>
         <Text style={styles.descContent}>
-          Hi all! I am Lisa and I’m from Toronto. I would like to arrange a swap
-          with someone, please send me a DM if you are interested
+        {description}
         </Text>
       </View>
       <View style={styles.chatHistoryView}>
@@ -155,6 +169,7 @@ const styles = StyleSheet.create({
   },
   topImage: {
     width: '100%',
+    height:"20%"
   },
   titleView: {
     width: '100%',
