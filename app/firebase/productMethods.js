@@ -65,6 +65,7 @@ export async function  addProduct(imageArray,title,price,category,location,descr
       snapshot.forEach((doc) => {
             product.push({
               key: doc.id,
+              uid: doc.data().uid,
               imageArray:Object.values(doc.data().imageArray),
               title:doc.data().title,
               price:doc.data().price,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, Image,FlatList, ScrollView} from 'react-native';
 import {Input} from 'react-native-elements';
 import {
   SmallButton,
@@ -13,7 +13,7 @@ import config from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {viewedItem} from "../../firebase/ratingMethods"
 import {sendProductComment,getProductComment} from "../../firebase/ratingMethods"
-import { FlatList } from 'react-native';
+import {getUserInfo,getSellerInfo} from "../../firebase/authMethods"
 
 const DATA = [
   {
@@ -55,12 +55,17 @@ const DATA = [
 ];
 
 const ItemPage = ({navigation,route}) => {
-  const {key,imageArray,title,location,price,description,followCount,viewCount} =route.params.itemInfo;
-  const {commentList,setCommentList} = useState([])
-  const {productComment,setProductComment} = useState([])
+  const {key,uid,imageArray,title,price,description,followCount,viewCount} =route.params.itemInfo;
+  const [commentList,setCommentList] = useState([])
+  const [productComment,setProductComment] = useState([])
+  const [userInfo,setUserInfo] = useState([])
+  const [sellerInfo,setSellerInfo] = useState([])
+
   useEffect(()=>{
     increaseCount()
-    fetchProductComments()
+    //fetchProductComments()
+    fetchUserinfo()
+    fetchSellerInfo()
   },[])
 
   const increaseCount=async()=>{
@@ -71,19 +76,41 @@ const ItemPage = ({navigation,route}) => {
    })
   }
 
-  const fetchProductComments=async()=>{
-    await getProductComment(key).then((response)=>{
-     console.log("response of Product Comments:",response)
-     setCommentList(response)
+  // const fetchProductComments=async()=>{
+  //   await getProductComment(key).then((response)=>{
+  //    console.log("response of Product Comments:",response)
+  //    setCommentList(response)
+  //   })
+  // }
+
+  const fetchUserinfo=async()=>{
+    await getUserInfo().then((response)=>{
+      console.log("response:",response)
+        setUserInfo(response)
+    })
+  }
+  
+  const fetchSellerInfo=async()=>{
+    await getSellerInfo(uid).then((response)=>{
+      console.log("id:",uid)
+      console.log("response of seller :",response)
+        setSellerInfo(response)
     })
   }
 
   const sendComment=async()=>{
-    await sendProductComment(key,productComment).then((response)=>{
+    let commentArray = [...commentList]
+      commentArray.push({
+        key:userInfo[0].uid,
+        imageUrl:userInfo[0].imageUrl,
+        ProfileName:userInfo[0].ProfileName,
+        productComment:productComment
+      })
+      setCommentList(commentArray)
+      console.log("se")
+    await sendProductComment(key,userInfo[0].imageUrl,userInfo[0].ProfileName,productComment).then((response)=>{
      console.log("response of send product Comments:",response)
-     let commentArray = [...commentList]
-     commentArray.push(response)
-     setCommentList(commentArray)
+     setProductComment("");
     })
   }
 
@@ -100,13 +127,13 @@ const ItemPage = ({navigation,route}) => {
   };
   
   const renderCommentsItem = ({item}) => {
-    //const {imageArray,isFollowed,price}=item
+    const {imageUrl,ProfileName}=item
     return (
       <ChatUser
       style={styles.chatUser}
-      image={assets.images.samples.avatar1}
-      name="Samanta"
-      content="Wonderful pencil cases! I sent you a DM!"
+      image={{uri:imageUrl}}
+      name={ProfileName}
+      content={productComment}
     />
     );
   }
@@ -121,13 +148,13 @@ const ItemPage = ({navigation,route}) => {
             onPress={() => navigation.navigate('sellerprofile')}>
             <Image
               style={styles.avatar}
-              source={assets.images.samples.avatar2}
+              source={sellerInfo=='' ? assets.images.samples.avatar2 :{uri: sellerInfo[0].imageUrl}}
             />
           </TouchableOpacity>
         </View>
         <View style={[styles.titelRowView, {marginTop: 10}]}>
           <Text style={styles.price}>{price}</Text>
-          <Text style={styles.location}>{location}</Text>
+          <Text style={styles.location}>{sellerInfo=='' ? "location" : sellerInfo[0].location}</Text>
         </View>
       </View>
       <View style={styles.messageView}>
@@ -159,19 +186,20 @@ const ItemPage = ({navigation,route}) => {
           style={styles.chatHistoryView}
           renderItem={renderCommentsItem}
           showsVerticalScrollIndicator={false}
-          data={DATA}
+          data={commentList}
           keyExtractor={(item,index) => index.toString()}
         />
       <View style={styles.commentView}>
         <Image
           style={styles.commentAvatar}
-          source={assets.images.samples.avatar1}
+          source={userInfo=='' ? assets.images.icons.uploadIcon :{uri: userInfo[0].imageUrl}}
         />
         <Input
           containerStyle={styles.commentInputContainer}
           inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           inputStyle={styles.commentInput}
-          rightIcon={<CustomButton style={styles.commentButton} title="Post" />}
+          onChangeText={(text)=>setProductComment(text)}
+          rightIcon={<CustomButton style={styles.commentButton} title="Post" onPress={()=>{sendComment}}/>}
           placeholder="Add a comment..."
         />
       </View>

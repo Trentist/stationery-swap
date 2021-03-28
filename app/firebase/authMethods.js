@@ -144,3 +144,31 @@ export async function  getUserInfo() {
   }
   return user
 }
+
+export async function  getSellerInfo(uid) {
+  let user=[];
+  try {
+      let snapshot = await firestore()
+      .collection('users')
+      .where('uid', '==', uid)
+      .get();
+      
+    snapshot.forEach((doc) => {
+          user.push({
+            email: doc.data().email,
+            key: doc.id,
+            ProfileName: doc.data().ProfileName,
+            imageUrl : doc.data().ProfileImage,
+            location : doc.data().location,
+            description:doc.data().description
+          });
+        });
+
+      const url=await storage().ref(user[0].imageUrl).getDownloadURL();
+      user[0].imageUrl=url
+       console.log("user is:",user)
+  } catch (err) {
+    console.log("There is something wrong!!!!", err.message);
+  }
+  return user
+}

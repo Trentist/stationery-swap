@@ -2,18 +2,17 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 
-export async function  sendProductComment(id,productComment) {
+export async function  sendProductComment(id,imageUrl,ProfileName,productComment) {
     let response;
     try {
       const currentUser = auth().currentUser;
       if(currentUser){
-      const url=await storage().ref().getDownloadURL();    
       const db = firestore();
       await db.collection("ItemComments").add({
         uid: currentUser.uid, 
         itemId:id, 
-        ProfileImage: currentUser.imageUrl,  
-        ProfileName: currentUser.ProfileName,  
+        ProfileImage: imageUrl,  
+        ProfileName: ProfileName,  
         productComment: productComment
       })
     .then(async(docRef) => {
@@ -56,11 +55,11 @@ export async function  getProductComment(id) {
             });
           });
       
-          for (const item of productComments) {
-            const url = await storage().ref(item.ProfileImage).getDownloadURL()
-            item.ProfileImage = url
-            console.log("comment profile url:",item.ProfileImage)
-          }          
+          // for (const item of productComments) {
+          //   const url = await storage().ref(item.ProfileImage).getDownloadURL()
+          //   item.ProfileImage = url
+          //   console.log("comment profile url:",item.ProfileImage)
+          // }          
       }else{
         console.log("Current User Token is Expired");
       }
