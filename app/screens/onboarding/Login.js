@@ -121,26 +121,16 @@ const Login = ({navigation}) => {
   const LoginPressed=async()=>{
     if(email && password !== ""){
       setBusyModal(true);
-    await logIn(email,password).then((response)=>{
-      console.log("response:",response)
+    await logIn(email,password).then(()=>{
       setBusyModal(false);
-      if(response=="added"){
         navigation.reset({
           index:0,
           routes:[{name:'Main'}]
         })
-      } else if (response.code == 'auth/email-already-in-use') {
-        setErrorModalText('That email address is already in use!');
-        setErrorModal(true);
-    
-      } else if (response.code == 'auth/invalid-email') {
-        setErrorModalText('That email address is invalid!');
-        setErrorModal(true);
-      } 
-      else if(response.code !==undefined || response.code !== null){
-        setErrorModalText('Unknown error occurred.');
-        setErrorModal(true);
-      }
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
     })
     }else{
       setErrorModalText('Please fill all fields');

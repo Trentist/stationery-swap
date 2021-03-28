@@ -55,14 +55,11 @@ const EditProfile = ({navigation}) => {
   const fetchUserInfo=async()=>{
     await getUserInfo().then((response)=>{
       setBusyModal(false);
-      console.log("response:",response.length)
-      if(response.length<=0){
-        console.log("response:",response.length)
-        setErrorModalText('Unknown error occurred.');
-        setErrorModal(true);
-      } else {
-        setUserInfo(response)
-      }
+      setUserInfo(response)
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
     })
   }
 
@@ -71,6 +68,9 @@ const EditProfile = ({navigation}) => {
         navigation.reset({
           index:0,
           routes:[{name:'Onboarding'}]
+        }).catch((error)=>{
+          setErrorModalText(error);
+          setErrorModal(true);
         })  
       }
     )

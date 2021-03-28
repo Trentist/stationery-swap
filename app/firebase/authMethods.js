@@ -1,89 +1,61 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import {Alert} from "react-native";
 
 export async function  signUp(email, pass, name) {
-  let response;
-  try {
-    await auth().createUserWithEmailAndPassword( email, pass);
+    await auth().createUserWithEmailAndPassword( email, pass).catch((error) => {
+      throw error 
+     });
     const currentUser = auth().currentUser;
-    response="added"
-    console.log("currentUser:",currentUser)
-    if(currentUser){
     const db = firestore();
     await db.collection("users").add({
       uid: currentUser.uid,
       email: currentUser.email,
       name: name,
+    }).catch((error) => {
+        throw error
     })
-    .then((docRef) => {
-      console.log("Document written with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding document: ", error);
-    });
-    }else{
-      console.log("There is something wrong! Current User Data Is Not Saved");
-    }
-  
-  } catch (err) {
-    response=err
-    console.log("There is something wrong!!!!", err.code);
-  }
- return response
 }
 
  export async function logIn(mail, pass) {
-   let response;
-   try {
-    await auth().signInWithEmailAndPassword(mail, pass)
-    response="added"
-   } catch (err) {
-     console.log("There is something wrong!", err.message);
-     response=err
-   }
-   return response;
+    await auth().signInWithEmailAndPassword(mail, pass).catch(() => {
+      throw ('email or password is incorrect!') 
+     });
  }
 
 export async function loggingOut() {
-  try {
-    await auth().signOut();
-  } catch (err) {
-    Alert.alert('There is something wrong!', err.message);
-  }
+    await auth().signOut().catch(() => {
+      throw ('Unknown error occurred') 
+     });
 }
 
 export async function passwordReset(mail) {
-  try {
-    await auth().sendPasswordResetEmail(mail)
-    console.log('Password reset email sent successfully')
-  } catch (err) {
-    Alert.alert('There is something wrong!', err.message);
-  }
+    await auth().sendPasswordResetEmail(mail).catch(() => {
+      throw ('some internal error occured') 
+     });
 }
 
 export async function  updateProfileInfo(profileImage,profileName,location,description) {
-  let response;
-  try {
-    let refId;
-    const currentUser = auth().currentUser;
-    if(currentUser){
+      let refId;
+      const currentUser = auth().currentUser;
       let snapshot = await firestore()
       .collection('users')
       .where('uid', '==', currentUser.uid)
-      .get();
-      snapshot.forEach(doc =>refId= doc.id);
-      console.log("user key",refId)
-      await storage().ref(profileImage.fileName)
-      .putFile(profileImage.uri)
-      .then((snapshot) => {
-      console.log(`${snapshot} has been successfully uploaded.`);
-      })
-      .catch((e) => console.log('uploading image error => ', e));
+      .get().catch(() => {
+        throw ('user token is expired') 
+       });
+      snapshot.forEach(doc =>refId = doc.id);
+      const imageRef = storage().ref(`user/${profileImage.fileName}`)
+      await imageRef.putFile(profileImage.uri).catch(() => {
+         throw ('image Uploading failed') 
+        })
+      
+      const url = await imageRef.getDownloadURL().catch(() => { 
+        throw ('image Not Correctly Uploaded')
+       });
 
       const updateDetail = {
-        ProfileImage:profileImage.fileName,
+        ProfileImage:url,
         ProfileName:profileName,
         location:location,
         description:description
@@ -93,34 +65,20 @@ export async function  updateProfileInfo(profileImage,profileName,location,descr
       .collection('users')
       .doc(refId)
       .update(updateDetail)
-      .then(() => {
-        response="added"
-        console.log('success',updateDetail);
-      })
-      .catch(error => {
-        const {code, message} = error;
-        console.log(message);
-      });
-    }else{
-      console.log("Current User Token is Expired");
-    }
-  
-  } catch (err) {
-    response=error
-    console.log("There is something wrong!!!!", err.message);
-  }
-  return response;
+      .catch(() => { 
+        throw ('Unknown error occurred.')
+     });
 }
 
 export async function  getUserInfo() {
-  let user=[];
-  try {
+    let user=[];
     const currentUser = auth().currentUser;
-    if(currentUser){
       let snapshot = await firestore()
       .collection('users')
       .where('uid', '==', currentUser.uid)
-      .get();
+      .get().catch(() => {
+        throw ('user token is expired') 
+       });
       
     snapshot.forEach((doc) => {
           user.push({
@@ -132,28 +90,19 @@ export async function  getUserInfo() {
             description:doc.data().description
           });
         });
-
-      const url=await storage().ref(user[0].imageUrl).getDownloadURL();
-      user[0].imageUrl=url
-       console.log("user is:",user)     
-    }else{
-      console.log("Current User Token is Expired");
-    }
-  } catch (err) {
-    console.log("There is something wrong!!!!", err.message);
-  }
-  return user
+    return user
 }
 
 export async function  getSellerInfo(uid) {
-  let user=[];
-  try {
+      let user=[];
       let snapshot = await firestore()
       .collection('users')
       .where('uid', '==', uid)
-      .get();
+      .get().catch(() => {
+        throw ('no seller data found') 
+       });
       
-    snapshot.forEach((doc) => {
+      snapshot.forEach((doc) => {
           user.push({
             email: doc.data().email,
             key: doc.id,
@@ -163,12 +112,5 @@ export async function  getSellerInfo(uid) {
             description:doc.data().description
           });
         });
-
-      const url=await storage().ref(user[0].imageUrl).getDownloadURL();
-      user[0].imageUrl=url
-       console.log("user is:",user)
-  } catch (err) {
-    console.log("There is something wrong!!!!", err.message);
-  }
   return user
 }

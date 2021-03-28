@@ -26,8 +26,8 @@ const CreateProfile = ({navigation}) => {
   const options = {
     mediaType: 'photo',
     includeBase64: false,
-    maxHeight: 200,
-    maxWidth: 200,
+    maxHeight: 300,
+    maxWidth: 300,
   };
   
   const selectImage=()=>{
@@ -45,20 +45,23 @@ const CreateProfile = ({navigation}) => {
   }
 
   const saveProfile=async()=>{
+    if(selectedPicture && profileName && location && description !== ""){
       setBusyModal(true);
-      await updateProfileInfo(selectedPicture,profileName,location,description).then((response)=>{
+      await updateProfileInfo(selectedPicture,profileName,location,description).then(()=>{
       setBusyModal(false);
-      console.log("get profile information")
-      if(response=="added"){
         navigation.reset({
           index:0,
           routes:[{name:'Main'}]
         })
-      } else if(response.code !==undefined && response.code!==null){
-        setErrorModalText('Unknown error occurred.');
-        setErrorModal(true);
-      }
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
     })
+    }else{
+      setErrorModalText('Please fill all fields');
+      setErrorModal(true);
+    }
   }
 
   return (
