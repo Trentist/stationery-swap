@@ -7,6 +7,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import UploadImage from '../../components/pages/UploadImage';
 import config from '../../config';
 import { addProduct } from '../../firebase/productMethods';
+import TagsInput from '../../components/common/TagsInput';
 
 const locations = [{
   value: 'Toronto, Canada',
@@ -125,12 +126,18 @@ const NewListing = (props) => {
       multiline textAlignVertical="top" value={description}
       onChangeText={(text)=>setDescription(text)}/>
 
-      <TextInput style={[styles.textInput, {height: 50}]} 
+      {/* <TextInput style={[styles.textInput, {height: 50}]} 
       placeholder="Product Tags" value={productTags} 
-      onChangeText={(text)=>setProductTags(text)}/>
+      onChangeText={(text)=>setProductTags(text)}/> */}
+
+      <TagsInput />
+
+
       <Text style={[styles.detail, {marginTop: 5}]}>Optimal limit: 10</Text>
       <SmallButton style={{width: 100, marginTop: 20}} title="Publish"
-      onPress={()=>{publish()}}/>
+       onPress={()=>{publish()}}/>
+
+
       <CustomModal
         show={busyModal}
         onClose={() => setBusyModal(false)}
