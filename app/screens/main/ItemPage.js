@@ -199,9 +199,14 @@ const ItemPage = ({navigation,route}) => {
           inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           inputStyle={styles.commentInput}
           onChangeText={(text)=>setProductComment(text)}
-          rightIcon={<CustomButton style={styles.commentButton} title="Post" onPress={()=>{sendComment}}/>}
+          // rightIcon={<CustomButton style={styles.commentButton} title="Post" onPress={()=>{sendComment}}/>}
           placeholder="Add a comment..."
         />
+        
+        <View style={styles.commentButtonContainer}>
+        <Text onPress={()=>console.log('Comment Posted')} style={styles.commentButton} >Post</Text>
+        </View>
+
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Similar Items</Text>
@@ -349,17 +354,19 @@ const styles = StyleSheet.create({
     borderColor: '#707070',
     borderWidth: 1,
     alignItems: 'center',
+  borderTopRightRadius:0,
+  borderBottomRightRadius:0,
+  borderRightWidth:0,
   },
   commentInput: {
     color: 'black',
     fontSize: 14,
+    
   },
   commentButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    
+
     color: '#F36190',
-    width: 50,
-    height: '100%',
     fontSize: 14,
   },
   itemContainer: {
@@ -386,6 +393,23 @@ const styles = StyleSheet.create({
     width: '48%',
     height: 200,
   },
+
+  commentButtonContainer:
+  {
+
+    borderWidth:1,
+    borderColor: '#707070',
+    height:36,
+    justifyContent:'center',
+    alignItems:'center',
+    width:60,
+    borderTopRightRadius:18,
+    borderBottomRightRadius:18,
+    borderLeftWidth:0,
+
+
+    
+  }
 });
 
 export default ItemPage;
