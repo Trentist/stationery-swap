@@ -44,6 +44,7 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-social-buttons": "^1.2.0",
     "react-native-tab-view": "^2.15.2",
+    "react-native-tags-input": "^1.0.10",
     "react-native-vector-icons": "^8.0.0",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
