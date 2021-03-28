@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
 import {Input} from 'react-native-elements';
 import {
@@ -12,6 +12,8 @@ import assets from '../../assets';
 import config from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {viewedItem} from "../../firebase/ratingMethods"
+import {sendProductComment,getProductComment} from "../../firebase/ratingMethods"
+import { FlatList } from 'react-native';
 
 const DATA = [
   {
@@ -53,10 +55,12 @@ const DATA = [
 ];
 
 const ItemPage = ({navigation,route}) => {
-  const {key,imageArray,title,location,price,description,followCount,viewCount,rating} =route.params.itemInfo;
-  
+  const {key,imageArray,title,location,price,description,followCount,viewCount} =route.params.itemInfo;
+  const {commentList,setCommentList} = useState([])
+  const {productComment,setProductComment} = useState([])
   useEffect(()=>{
     increaseCount()
+    fetchProductComments()
   },[])
 
   const increaseCount=async()=>{
@@ -65,6 +69,22 @@ const ItemPage = ({navigation,route}) => {
    await viewedItem(key,viewsValue,ratingValue).then((response)=>{
     console.log("response in increase count:",response)
    })
+  }
+
+  const fetchProductComments=async()=>{
+    await getProductComment(key).then((response)=>{
+     console.log("response of Product Comments:",response)
+     setCommentList(response)
+    })
+  }
+
+  const sendComment=async()=>{
+    await sendProductComment(key,productComment).then((response)=>{
+     console.log("response of send product Comments:",response)
+     let commentArray = [...commentList]
+     commentArray.push(response)
+     setCommentList(commentArray)
+    })
   }
 
   const renderItem = (item, index) => {
@@ -78,6 +98,19 @@ const ItemPage = ({navigation,route}) => {
       />
     );
   };
+  
+  const renderCommentsItem = ({item}) => {
+    //const {imageArray,isFollowed,price}=item
+    return (
+      <ChatUser
+      style={styles.chatUser}
+      image={assets.images.samples.avatar1}
+      name="Samanta"
+      content="Wonderful pencil cases! I sent you a DM!"
+    />
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image style={styles.topImage} source={{uri:imageArray[0]}} />
@@ -122,20 +155,13 @@ const ItemPage = ({navigation,route}) => {
         {description}
         </Text>
       </View>
-      <View style={styles.chatHistoryView}>
-        <ChatUser
-          style={styles.chatUser}
-          image={assets.images.samples.avatar1}
-          name="Samanta"
-          content="Wonderful pencil cases! I sent you a DM!"
+        <FlatList
+          style={styles.chatHistoryView}
+          renderItem={renderCommentsItem}
+          showsVerticalScrollIndicator={false}
+          data={DATA}
+          keyExtractor={(item,index) => index.toString()}
         />
-        <ChatUser
-          style={styles.chatUser}
-          image={assets.images.samples.avatar2}
-          name="Bella"
-          content="I love this!"
-        />
-      </View>
       <View style={styles.commentView}>
         <Image
           style={styles.commentAvatar}
@@ -266,7 +292,7 @@ const styles = StyleSheet.create({
   chatHistoryView: {
     borderBottomColor,
     borderBottomWidth: 1,
-    width: '100%',
+    width: '100%'
   },
   chatUser: {
     paddingHorizontal,

@@ -16,14 +16,6 @@ const locations = [{
   value: 'New York, US',
 }];
 
-const categories = [{
-  value: 'School',
-}, {
-  value: 'Home',
-}, {
-  value: 'Great',
-}];
-
 const NewListing = (props) => {
   const [busyModal, setBusyModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -31,7 +23,6 @@ const NewListing = (props) => {
   const [imageArray,setImageArray] = useState([{}])
   const [title,setTitle] = useState('')
   const [price,setPrice] = useState('')
-  const [category,setCategory] = useState('')
   const [location,setLocation] = useState('')
   const [description,setDescription] = useState('')
   const [productTags,setProductTags] = useState('')
@@ -67,14 +58,13 @@ const NewListing = (props) => {
   const publish=async()=>{
     setBusyModal(true);
     imageArray.splice(0, 1)
-    await addProduct(imageArray,title,price,category,location,description,productTags).then((response)=>{
+    await addProduct(imageArray,title,price,location,description,productTags).then((response)=>{
       setBusyModal(false);
       console.log("response:",response)
       if(response=="added"){
         setImageArray([{}])
         setTitle("")
         setPrice("")
-        setCategory("")
         setLocation("")
         setDescription("")
         setProductTags("")
@@ -124,13 +114,6 @@ const NewListing = (props) => {
       <TextInput style={[styles.textInput, {height: 50}]} 
       placeholder="Price" value={price}
       onChangeText={(text)=>setPrice(text)}/>
-      <Dropdown
-        label='Category'
-        data={categories}
-        value={category}
-        containerStyle={styles.dropdown}
-        onChangeText={(text)=>setCategory(text)}
-      />
       <Dropdown
         label='Location'
         data={locations}
