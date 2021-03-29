@@ -14,14 +14,6 @@ import {getFeaturedProducts,getTagsProducts,getFollowedProducts} from '../../fir
 import {getTags} from '../../firebase/tagMethods';
 import {CustomModal} from '../../components/common';
 
-const categories = [{
-  value: 'School',
-}, {
-  value: 'Home',
-}, {
-  value: 'Great',
-}];
-
 const Home = ({navigation}) => {
   const [featureProducts,setFeatureProducts] = useState([])
   const [tagProducts,setTagProducts] = useState([])

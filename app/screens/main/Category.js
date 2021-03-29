@@ -15,7 +15,7 @@ const Category = ({navigation,route}) => {
       style={styles.featured}
       image={{uri:imageArray[0]}}
       featured
-      item
+      item={item}
       marked={isFollowed}
       price={price}
     />

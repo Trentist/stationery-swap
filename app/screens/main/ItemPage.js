@@ -14,42 +14,22 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {viewedItem} from "../../firebase/ratingMethods"
 import {sendProductComment,getProductComment} from "../../firebase/productCommentMethods"
 import {getUserInfo,getSellerInfo} from "../../firebase/authMethods"
-
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-];
+import {getTagsProducts} from '../../firebase/productMethods';
 
 const ItemPage = ({navigation,route}) => {
-  const {key,uid,imageArray,title,price,description,followedArray,viewCount} =route.params.itemInfo;
+  const {key,uid,imageArray,title,price,description,followedArray,viewCount,productTags} =route.params.itemInfo;
   const [commentList,setCommentList] = useState([])
   const [productComment,setProductComment] = useState([])
   const [userInfo,setUserInfo] = useState([])
   const [sellerInfo,setSellerInfo] = useState([])
+  const [similarProducts,setSimilarProducts] = useState([])
 
   useEffect(()=>{
     increaseCount()
     fetchProductComments()
     fetchUserinfo()
     fetchSellerInfo()
+    fetchSimilarItem()
   },[])
 
   const increaseCount=async()=>{
@@ -82,6 +62,17 @@ const ItemPage = ({navigation,route}) => {
     })
   }
 
+  const fetchSimilarItem=async()=>{
+      const tags=[{tag:productTags[0]}]
+      await getTagsProducts(8,tags).then((response)=>{
+        console.log("tag product list:",response)
+        setSimilarProducts(response)
+      }).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+  }
+
   const sendComment=async()=>{
     let commentArray = [...commentList]
       commentArray.push({
@@ -99,15 +90,17 @@ const ItemPage = ({navigation,route}) => {
     })
   }
 
-  const renderItem = (item, index) => {
-    return (
-      <Item
-        style={styles.featured}
-        image={assets.images.samples.featured}
-        featured
-        unmarked
-        price={5}
-      />
+  const renderItem = (item) => {
+    const {imageArray,isFollowed,price}=item
+  return (
+    <Item
+      style={styles.featured}
+      image={{uri:imageArray[0]}}
+      featured
+      item={item}
+      marked={isFollowed}
+      price={price}
+    />
     );
   };
   
@@ -196,7 +189,7 @@ const ItemPage = ({navigation,route}) => {
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Similar Items</Text>
-        <TwoColumnsView data={DATA} renderItem={renderItem} />
+        <TwoColumnsView data={similarProducts} renderItem={renderItem} />
       </View>
     </ScrollView>
   );
