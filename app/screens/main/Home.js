@@ -10,9 +10,8 @@ import {
 import {Input} from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import Item from '../../components/pages/Item';
-import assets from '../../assets';
-import {getProducts} from '../../firebase/productMethods';
-import {getfolloweditems} from '../../firebase/ratingMethods'
+import {getFeaturedProducts,getTagsProducts,getFollowedProducts} from '../../firebase/productMethods';
+import {getTags} from '../../firebase/tagMethods';
 import {CustomModal} from '../../components/common';
 
 const categories = [{
@@ -24,43 +23,55 @@ const categories = [{
 }];
 
 const Home = ({navigation}) => {
-  const [busyModal, setBusyModal] = useState(true);
   const [featureProducts,setFeatureProducts] = useState([])
+  const [tagProducts,setTagProducts] = useState([])
   const [followedProducts,setfollowedProducts] = useState([])
-
+  const [busyModal, setBusyModal] = useState(true);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState('');
+  
   useFocusEffect(
     React.useCallback(() => {
-      fetchProducts()
+      fetchFeaturedProducts()
+      fetchTagsProducts()
+      fetchFollowedProducts()
   }, [])
   );
 
-  const fetchProducts=async()=>{
-    await getProducts().then(async(response)=>{
-    console.log("response:",response)
-    await getfolloweditems().then((responsed)=>{
-      console.log("followed items",responsed)
-      let followed=[];  
-      let result = response.map((el)=> {
-        let obj = Object.assign({...el});
-        obj.isFollowed = responsed.some((selectedItem)=> {
-          console.log("item key:",obj.key)
-          if(selectedItem.followCount==0){
-            return false
-          }
-          return selectedItem.ItemId === obj.key
-        })
-        return obj;
-      })
-      
-      result.forEach((item)=>{
-       if(item.isFollowed){
-        followed.push(item)
-       }
-      })
-      setFeatureProducts(result)
-      setfollowedProducts(followed)
+  const fetchFeaturedProducts=async()=>{
+    await getFeaturedProducts(10).then((response)=>{
+      console.log("response:",response)
+      setFeatureProducts(response)
       setBusyModal(false);
-    })   
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
+    })
+  }
+
+  const fetchTagsProducts=async()=>{
+    await getTags(10).then(async(tags)=>{
+      await getTagsProducts(1,tags).then((response)=>{
+        console.log("tag product list:",response)
+        setTagProducts(response)
+      }).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }).catch((error)=>{
+      setErrorModalText(error);
+      setErrorModal(true);
+    })
+  }
+
+  const fetchFollowedProducts=async()=>{
+    await getFollowedProducts(10).then((response)=>{
+      console.log("followed:",response)
+      setfollowedProducts(response)
+    }).catch((error)=>{
+      setErrorModalText(error);
+      setErrorModal(true);
     })
   }
 
@@ -78,30 +89,17 @@ const Home = ({navigation}) => {
     );
   }
 
-  const renderCategoryItem = ({item}) => {
-    const {value} = item 
-    let topItem = featureProducts[0];
-    let count=0
-    featureProducts.forEach((item)=>{
-    if(value == item.category){
-      ++count
-      if(topItem.rating <= item.rating){  
-      topItem=item
-      }
-    }
-    })
-    if(count>=1){
-    const {imageArray} = topItem 
+  const renderTagsItem = ({item}) => {
+    const {imageArray,topTag} = item 
     return (
       <Item
         style={styles.category}
         image={{uri:imageArray[0]}}
-        item={topItem}
+        item={item}
         category
-        title={value}
+        title={topTag}
         />
       );
-    }
   }
 
   const separator = () => <View style={{width: 25}}></View>;
@@ -163,9 +161,9 @@ const Home = ({navigation}) => {
           <FlatList
             style={styles.itemList}
             ItemSeparatorComponent={separator}
-            renderItem={renderCategoryItem}
+            renderItem={renderTagsItem}
             showsHorizontalScrollIndicator={false}
-            data={categories}
+            data={tagProducts}
             keyExtractor={(item,index) => index.toString()}
             horizontal
           />
@@ -196,6 +194,13 @@ const Home = ({navigation}) => {
       </ScrollView>
        )
        }
+       <CustomModal
+        show={errorModal}
+        onClose={() => setErrorModal(false)}
+        backPress={true}
+        text={errorModalText}
+        okbtn={true}
+      />
     </View>
   );
 };

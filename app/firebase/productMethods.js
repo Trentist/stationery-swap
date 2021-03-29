@@ -17,45 +17,6 @@ export async function addProduct(imageArray, title, price, location, description
     nameArray.push(url)
   }
   console.log("nameArray:", nameArray)
-  
-  for (const tag of productTags) {
-    let refId;
-    let counter;
-    let snapshot = null
-    snapshot = await firestore()
-    .collection('tagsList')
-    .where('tag', '==',tag)
-    .get().catch(() => { 
-      throw ('Error in finding tags.')
-    });
-     if( snapshot !=null ){
-      console.log("item inside the if statement:",tag)
-      snapshot.forEach((doc) =>{
-        refId = doc.id,
-        counter= doc.data().counter
-      });
-      const updateDetail = {
-        counter:counter+1
-      };
-
-      await firestore()
-      .collection('tagsList')
-      .doc(refId)
-      .update(updateDetail)
-      .catch(() => { 
-        throw ('error in updating.')
-     });
-
-     }else{
-      await firestore().collection("tagsList").add({
-        tag: tag,
-        counter: 1
-      }).catch(() => { 
-        throw ('error in adding tag.')
-     });
-     } 
-  }
-
   const db = firestore();
   await db.collection("products").add({
     uid: currentUser.uid,
@@ -66,23 +27,29 @@ export async function addProduct(imageArray, title, price, location, description
     description: description,
     productTags: productTags,
     viewCount: 0,
-    followCount: 0,
+    followedArray: {},
     rating: 0
   }).catch(() => { 
     throw ('Product not Added.')
  });
 }
 
-export async function getProducts() {
+export async function getFeaturedProducts(limit) {
   let product = [];
+  const currentUser = auth().currentUser;
   let snapshot = await firestore()
     .collection('products')
     .orderBy('rating', 'desc')
+    .limit(limit)
     .get().catch(() => { 
-      throw ('Unknown error occurred.')
+      throw ('No record found.')
    });
-
-  snapshot.forEach((doc) => {
+  
+  snapshot.forEach((doc)=> { 
+    let followedArray = Object.values(doc.data().followedArray)
+    let isFollowed = followedArray.some((uid)=> {
+      return uid == currentUser.uid
+    })
     product.push({
       key: doc.id,
       uid: doc.data().uid,
@@ -93,9 +60,77 @@ export async function getProducts() {
       description: doc.data().description,
       productTags: doc.data().productTags,
       viewCount: doc.data().viewCount,
-      followCount: doc.data().followCount,
-      rating: doc.data().rating
+      followedArray: followedArray,
+      rating: doc.data().rating,
+      isFollowed:isFollowed
     });
   });
+  return product
+}
+
+export async function getTagsProducts(limit,tags) {
+  let product = [];
+  const currentUser = auth().currentUser;
+  for (const tag of tags) {
+    console.log("tag inside function:",tag.tag);
+    let snapshot = await firestore().collection('products')
+    .where("productTags", "array-contains", tag.tag)
+    .limit(limit)
+    .get().catch((error) => { 
+      throw error
+   });
+
+  snapshot.forEach((doc)=> { 
+    let followedArray = Object.values(doc.data().followedArray)
+    let isFollowed = followedArray.some((uid)=> {
+      return uid == currentUser.uid
+    })
+    product.push({
+      key: doc.id,
+      uid: doc.data().uid,
+      imageArray: Object.values(doc.data().imageArray),
+      title: doc.data().title,
+      price: doc.data().price,
+      location: doc.data().location,
+      description: doc.data().description,
+      productTags: doc.data().productTags,
+      topTag: tag.tag,
+      viewCount: doc.data().viewCount,
+      followedArray: followedArray,
+      rating: doc.data().rating,
+      isFollowed:isFollowed
+    });
+  }); 
+  
+  }
+  return product
+}
+
+export async function getFollowedProducts(limit) {
+  let product = [];
+  const currentUser = auth().currentUser;    
+  let snapshot = await firestore().collection('products')
+  .where("followedArray", "array-contains", currentUser.uid)
+  .limit(limit)
+  .get().catch((error) => { 
+      throw error
+   });
+
+  snapshot.forEach((doc)=> {
+    product.push({
+      key: doc.id,
+      uid: doc.data().uid,
+      imageArray: Object.values(doc.data().imageArray),
+      title: doc.data().title,
+      price: doc.data().price,
+      location: doc.data().location,
+      description: doc.data().description,
+      productTags: doc.data().productTags,
+      viewCount: doc.data().viewCount,
+      followedArray: Object.values(doc.data().followedArray),
+      rating: doc.data().rating,
+      isFollowed:true
+    });
+  }); 
   return product
 }

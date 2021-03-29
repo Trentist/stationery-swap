@@ -39,7 +39,7 @@ const DATA = [
 ];
 
 const ItemPage = ({navigation,route}) => {
-  const {key,uid,imageArray,title,price,description,followCount,viewCount} =route.params.itemInfo;
+  const {key,uid,imageArray,title,price,description,followedArray,viewCount} =route.params.itemInfo;
   const [commentList,setCommentList] = useState([])
   const [productComment,setProductComment] = useState([])
   const [userInfo,setUserInfo] = useState([])
@@ -54,7 +54,7 @@ const ItemPage = ({navigation,route}) => {
 
   const increaseCount=async()=>{
    const viewsValue=viewCount+1
-   const ratingValue=(viewsValue+followCount)/2
+   const ratingValue=(viewsValue+followedArray.length)/2
    await viewedItem(key,viewsValue,ratingValue).then((response)=>{
     console.log("response in increase count:",response)
    })

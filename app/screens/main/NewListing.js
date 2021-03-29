@@ -19,19 +19,16 @@ import {
 import * as ImagePicker from 'react-native-image-picker';
 import config from '../../config';
 import {addProduct} from '../../firebase/productMethods';
-
+import {addTags} from '../../firebase/tagMethods';
 import TagInput from 'react-native-tags-input';
 
-const locations = [
+const types = [
   {
-    value: 'Toronto, Canada',
+    value: 'Outgoing',
   },
   {
-    value: 'Vancouver, Canada',
-  },
-  {
-    value: 'New York, US',
-  },
+    value: 'Looking for',
+  }
 ];
 
 const NewListing = (props) => {
@@ -42,7 +39,7 @@ const NewListing = (props) => {
   const [imageArray, setImageArray] = useState([{}]);
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  const [location, setLocation] = useState('');
+  const [type, setType] = useState('Outgoing');
   const [description, setDescription] = useState('');
 
 
@@ -76,16 +73,16 @@ const NewListing = (props) => {
   };
 
   const publish = async () => {
-    console.log("tags",tags.tagsArray)
     setBusyModal(true);
+    publishTags(tags.tagsArray)
     imageArray.splice(0, 1);
-    await addProduct(imageArray,title,price,location,description,tags.tagsArray,)
+    await addProduct(imageArray,title,price,type,description,tags.tagsArray)
     .then(() => {
         setBusyModal(false);
         setImageArray([{}]);
         setTitle('');
         setPrice('');
-        setLocation('');
+        setType('Outgoing');
         setDescription('');
         setTags({tags:'',tagsArray:[]});
     }).catch((error)=>{
@@ -94,6 +91,13 @@ const NewListing = (props) => {
         setErrorModal(true);
     })
   };
+
+  const publishTags =  async (taglist)=>{
+    await addTags(taglist).catch((error)=>{
+      setErrorModalText(error);
+      setErrorModal(true);
+  })
+  }
 
  const  updateTagState = (state) => {
     setTags(state)
@@ -146,11 +150,10 @@ const NewListing = (props) => {
         onChangeText={(text) => setPrice(text)}
       />
       <Dropdown
-        label="Location"
-        data={locations}
-        value={location}
+        data={types}
+        value={type}
         containerStyle={styles.dropdown}
-        onChangeText={(text) => setLocation(text)}
+        onChangeText={(text) => setType(text)}
       />
       <TextInput
         style={[styles.textInput, {height: 120}]}
@@ -260,11 +263,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     marginTop: 20,
-  },
-  location: {
-    borderColor: '#707070',
-    borderRadius: 10,
-    borderWidth: 1,
   },
   dropdown: {
     width: '100%',
