@@ -12,7 +12,7 @@ import assets from '../../assets';
 import config from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {viewedItem} from "../../firebase/ratingMethods"
-import {sendProductComment,getProductComment} from "../../firebase/ratingMethods"
+import {sendProductComment,getProductComment} from "../../firebase/productCommentMethods"
 import {getUserInfo,getSellerInfo} from "../../firebase/authMethods"
 
 const DATA = [
@@ -36,22 +36,6 @@ const DATA = [
     id: '58694a0f-3da1-471f-bd96-145571e29d75',
     title: 'Third Item',
   },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
 ];
 
 const ItemPage = ({navigation,route}) => {
@@ -63,7 +47,7 @@ const ItemPage = ({navigation,route}) => {
 
   useEffect(()=>{
     increaseCount()
-    //fetchProductComments()
+    fetchProductComments()
     fetchUserinfo()
     fetchSellerInfo()
   },[])
@@ -76,12 +60,12 @@ const ItemPage = ({navigation,route}) => {
    })
   }
 
-  // const fetchProductComments=async()=>{
-  //   await getProductComment(key).then((response)=>{
-  //    console.log("response of Product Comments:",response)
-  //    setCommentList(response)
-  //   })
-  // }
+  const fetchProductComments=async()=>{
+    await getProductComment(key).then((response)=>{
+     console.log("response of Product Comments:",response)
+     setCommentList(response)
+    })
+  }
 
   const fetchUserinfo=async()=>{
     await getUserInfo().then((response)=>{
@@ -101,8 +85,9 @@ const ItemPage = ({navigation,route}) => {
   const sendComment=async()=>{
     let commentArray = [...commentList]
       commentArray.push({
-        key:userInfo[0].uid,
-        imageUrl:userInfo[0].imageUrl,
+        itemId : key,
+        uid : userInfo[0].uid,
+        ProfileImage:userInfo[0].imageUrl,
         ProfileName:userInfo[0].ProfileName,
         productComment:productComment
       })
@@ -127,11 +112,12 @@ const ItemPage = ({navigation,route}) => {
   };
   
   const renderCommentsItem = ({item}) => {
-    const {imageUrl,ProfileName}=item
+    const {ProfileImage,ProfileName,productComment}=item
+    console.log("item inside:",item)
     return (
       <ChatUser
       style={styles.chatUser}
-      image={{uri:imageUrl}}
+      image={{uri:ProfileImage}}
       name={ProfileName}
       content={productComment}
     />
@@ -182,13 +168,14 @@ const ItemPage = ({navigation,route}) => {
         {description}
         </Text>
       </View>
+      <View style={styles.chatHistoryView}>
         <FlatList
-          style={styles.chatHistoryView}
           renderItem={renderCommentsItem}
           showsVerticalScrollIndicator={false}
           data={commentList}
           keyExtractor={(item,index) => index.toString()}
         />
+      </View>
       <View style={styles.commentView}>
         <Image
           style={styles.commentAvatar}
@@ -198,13 +185,12 @@ const ItemPage = ({navigation,route}) => {
           containerStyle={styles.commentInputContainer}
           inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           inputStyle={styles.commentInput}
+          value={productComment}
           onChangeText={(text)=>setProductComment(text)}
-          // rightIcon={<CustomButton style={styles.commentButton} title="Post" onPress={()=>{sendComment}}/>}
           placeholder="Add a comment..."
         />
-        
         <View style={styles.commentButtonContainer}>
-        <Text onPress={()=>console.log('Comment Posted')} style={styles.commentButton} >Post</Text>
+        <CustomButton style={styles.commentButton} title="Post" onPress={sendComment}/>
         </View>
 
       </View>
@@ -364,8 +350,7 @@ const styles = StyleSheet.create({
     
   },
   commentButton: {
-    
-
+    backgroundColor:'transparent',
     color: '#F36190',
     fontSize: 14,
   },

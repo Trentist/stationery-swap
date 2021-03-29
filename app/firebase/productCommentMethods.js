@@ -1,50 +1,36 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 
 export async function  sendProductComment(id,imageUrl,ProfileName,productComment) {
     let response;
-    try {
       const currentUser = auth().currentUser;
-      if(currentUser){
       const db = firestore();
       await db.collection("ItemComments").add({
-        uid: currentUser.uid, 
+        uid: currentUser.uid,
         itemId:id, 
         ProfileImage: imageUrl,  
-        ProfileName: ProfileName,  
-        productComment: productComment
+        ProfileName: ProfileName,
+        productComment: productComment,
+        date:new Date()
       })
-    .then(async(docRef) => {
-      response="added"
-      console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((error) => {
-      console.error("Error adding document: ", error);
-      });
-      }else{
-        console.log("Current User Token is Expired");
-      }
-    
-    } catch (err) {
-      response=error
-      console.log("There is something wrong!!!!", err.message);
-    }
+      .catch(() => { 
+        throw ('Message has not been send.')
+     });
     return response;
 }
   
 export async function  getProductComment(id) {
-    let productComments=[];
-    try {
-      const currentUser = auth().currentUser;
-      if(currentUser){
-        console.log("curren user:",currentUser)
+        let productComments=[];
+        const currentUser = auth().currentUser;
+        console.log("curren user:",currentUser.providerData)
         let snapshot = await firestore()
         .collection('ItemComments')
         .where('itemId', '==',id)
-        .get();
+        .get().catch(() => { 
+          throw ('Unknown error occurred.')
+       });
         
-      snapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
             productComments.push({  
               key : doc.id,
               itemId : doc.data().itemId,
@@ -54,17 +40,5 @@ export async function  getProductComment(id) {
               productComment : doc.data().productComment,
             });
           });
-      
-          // for (const item of productComments) {
-          //   const url = await storage().ref(item.ProfileImage).getDownloadURL()
-          //   item.ProfileImage = url
-          //   console.log("comment profile url:",item.ProfileImage)
-          // }          
-      }else{
-        console.log("Current User Token is Expired");
-      }
-    } catch (err) {
-      console.log("There is something wrong!!!!", err.message);
-    }
     return productComments;
 }
