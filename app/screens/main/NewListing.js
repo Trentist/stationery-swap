@@ -17,7 +17,6 @@ import {
   CustomModal,
 } from '../../components/common';
 import * as ImagePicker from 'react-native-image-picker';
-import UploadImage from '../../components/pages/UploadImage';
 import config from '../../config';
 import {addProduct} from '../../firebase/productMethods';
 
@@ -45,7 +44,6 @@ const NewListing = (props) => {
   const [price, setPrice] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
-  const [productTags, setProductTags] = useState('');
 
 
 
@@ -78,30 +76,23 @@ const NewListing = (props) => {
   };
 
   const publish = async () => {
+    console.log("tags",tags.tagsArray)
     setBusyModal(true);
     imageArray.splice(0, 1);
-    await addProduct(
-      imageArray,
-      title,
-      price,
-      location,
-      description,
-      productTags,
-    ).then((response) => {
-      setBusyModal(false);
-      console.log('response:', response);
-      if (response == 'added') {
+    await addProduct(imageArray,title,price,location,description,tags.tagsArray,)
+    .then(() => {
+        setBusyModal(false);
         setImageArray([{}]);
         setTitle('');
         setPrice('');
         setLocation('');
         setDescription('');
-        setProductTags('');
-      } else if (response.code !== undefined && response.code !== null) {
-        setErrorModalText('Unknown error occurred.');
+        setTags({tags:'',tagsArray:[]});
+    }).catch((error)=>{
+        setBusyModal(false);
+        setErrorModalText(error);
         setErrorModal(true);
-      }
-    });
+    })
   };
 
  const  updateTagState = (state) => {
@@ -169,11 +160,6 @@ const NewListing = (props) => {
         value={description}
         onChangeText={(text) => setDescription(text)}
       />
-
-      {/* <TextInput style={[styles.textInput, {height: 50}]} 
-      placeholder="Product Tags" value={productTags} 
-      onChangeText={(text)=>setProductTags(text)}/> */}
-
           <TagInput
           updateState={updateTagState}
           tags={tags}

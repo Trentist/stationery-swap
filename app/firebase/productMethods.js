@@ -5,9 +5,9 @@ import storage from '@react-native-firebase/storage';
 export async function addProduct(imageArray, title, price, location, description, productTags) {
   let nameArray = [];
   const currentUser = auth().currentUser;
-  imageArray.forEach(async (file) => {
+  for (const file of imageArray) {
     const imageRef = storage().ref(`product/${file.fileName}`)
-      await imageRef.putFile(profileImage.uri).catch(() => {
+      await imageRef.putFile(file.uri).catch(() => {
          throw ('image Uploading failed') 
         })
       
@@ -15,9 +15,47 @@ export async function addProduct(imageArray, title, price, location, description
         throw ('images are not correctly uploaded')
        });
     nameArray.push(url)
-  })
-
+  }
   console.log("nameArray:", nameArray)
+  
+  for (const tag of productTags) {
+    let refId;
+    let counter;
+    let snapshot = null
+    snapshot = await firestore()
+    .collection('tagsList')
+    .where('tag', '==',tag)
+    .get().catch(() => { 
+      throw ('Error in finding tags.')
+    });
+     if( snapshot !=null ){
+      console.log("item inside the if statement:",tag)
+      snapshot.forEach((doc) =>{
+        refId = doc.id,
+        counter= doc.data().counter
+      });
+      const updateDetail = {
+        counter:counter+1
+      };
+
+      await firestore()
+      .collection('tagsList')
+      .doc(refId)
+      .update(updateDetail)
+      .catch(() => { 
+        throw ('error in updating.')
+     });
+
+     }else{
+      await firestore().collection("tagsList").add({
+        tag: tag,
+        counter: 1
+      }).catch(() => { 
+        throw ('error in adding tag.')
+     });
+     } 
+  }
+
   const db = firestore();
   await db.collection("products").add({
     uid: currentUser.uid,
