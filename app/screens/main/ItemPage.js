@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    paddingBottom:400
   },
   topImage: {
     width: '100%',
