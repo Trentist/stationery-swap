@@ -4,15 +4,13 @@ export async function addTags(productTags) {
   for (const tag of productTags) {
     let refId;
     let counter;
-    let snapshot = null
-    snapshot = await firestore()
+    let snapshot = await firestore()
     .collection('tagsList')
     .where('tag', '==',tag)
     .get().catch(() => { 
       throw ('Error in finding tags.')
     });
-     if( snapshot !=null ){
-      console.log("item inside the if statement:",tag)
+     if( snapshot._docs.length > 0 ){
       snapshot.forEach((doc) =>{
         refId = doc.id,
         counter= doc.data().counter
@@ -26,7 +24,7 @@ export async function addTags(productTags) {
       .doc(refId)
       .update(updateDetail)
       .catch(() => { 
-        throw ('error in updating.')
+        throw ('error in updating tags.')
      });
 
      }else{
@@ -36,7 +34,7 @@ export async function addTags(productTags) {
       }).catch(() => { 
         throw ('error in adding tag.')
      });
-     } 
+    } 
   }
 }
 

@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 
-export async function addProduct(imageArray, title, price, location, description, productTags) {
+export async function addProduct(imageArray, title, price, type, description, productTags) {
   let nameArray = [];
   const currentUser = auth().currentUser;
   for (const file of imageArray) {
@@ -23,11 +23,11 @@ export async function addProduct(imageArray, title, price, location, description
     imageArray: Object.assign({ ...nameArray }),
     title: title,
     price: price,
-    location: location,
+    type: type,
     description: description,
     productTags: productTags,
     viewCount: 0,
-    followedArray: {},
+    followedArray: [""],
     rating: 0
   }).catch(() => { 
     throw ('Product not Added.')
@@ -46,7 +46,7 @@ export async function getFeaturedProducts(limit) {
    });
   
   snapshot.forEach((doc)=> { 
-    let followedArray = Object.values(doc.data().followedArray)
+    let followedArray = doc.data().followedArray
     let isFollowed = followedArray.some((uid)=> {
       return uid == currentUser.uid
     })
@@ -56,7 +56,7 @@ export async function getFeaturedProducts(limit) {
       imageArray: Object.values(doc.data().imageArray),
       title: doc.data().title,
       price: doc.data().price,
-      location: doc.data().location,
+      type: doc.data().type,
       description: doc.data().description,
       productTags: doc.data().productTags,
       viewCount: doc.data().viewCount,
@@ -81,7 +81,7 @@ export async function getTagsProducts(limit,tags) {
    });
 
   snapshot.forEach((doc)=> { 
-    let followedArray = Object.values(doc.data().followedArray)
+    let followedArray = doc.data().followedArray
     let isFollowed = followedArray.some((uid)=> {
       return uid == currentUser.uid
     })
@@ -91,7 +91,7 @@ export async function getTagsProducts(limit,tags) {
       imageArray: Object.values(doc.data().imageArray),
       title: doc.data().title,
       price: doc.data().price,
-      location: doc.data().location,
+      type: doc.data().type,
       description: doc.data().description,
       productTags: doc.data().productTags,
       topTag: tag.tag,
@@ -108,7 +108,7 @@ export async function getTagsProducts(limit,tags) {
 
 export async function getFollowedProducts(limit) {
   let product = [];
-  const currentUser = auth().currentUser;    
+  const currentUser = auth().currentUser;   
   let snapshot = await firestore().collection('products')
   .where("followedArray", "array-contains", currentUser.uid)
   .limit(limit)
@@ -123,11 +123,11 @@ export async function getFollowedProducts(limit) {
       imageArray: Object.values(doc.data().imageArray),
       title: doc.data().title,
       price: doc.data().price,
-      location: doc.data().location,
+      type: doc.data().type,
       description: doc.data().description,
       productTags: doc.data().productTags,
       viewCount: doc.data().viewCount,
-      followedArray: Object.values(doc.data().followedArray),
+      followedArray: doc.data().followedArray,
       rating: doc.data().rating,
       isFollowed:true
     });

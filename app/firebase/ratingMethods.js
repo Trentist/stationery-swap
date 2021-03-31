@@ -21,7 +21,7 @@ export async function  followItem(id,followedArray,rating) {
       const currentUser = auth().currentUser;
       followedArray.push(currentUser.uid)
       const updateDetail = {
-        followedArray: Object.assign({ ...followedArray }),
+        followedArray: followedArray,
         rating:rating
       };
 
@@ -41,7 +41,7 @@ export async function  unfollowItem(id,followedArray,rating) {
       })
       
       const updateDetail = {
-        followedArray: Object.assign({ ...followedArray }),
+        followedArray: followedArray,
         rating:rating
       };
 
