@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,10 +8,10 @@ import {
   ScrollView,
 } from 'react-native';
 import {Input} from 'react-native-elements';
-import { useFocusEffect } from '@react-navigation/native';
 import Item from '../../components/pages/Item';
 import {getFeaturedProducts,getTagsProducts,getFollowedProducts} from '../../firebase/productMethods';
 import {getTags} from '../../firebase/tagMethods';
+import {followItem,unfollowItem} from '../../firebase/ratingMethods';
 import {CustomModal} from '../../components/common';
 
 const Home = ({navigation}) => {
@@ -22,13 +22,11 @@ const Home = ({navigation}) => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorModalText, setErrorModalText] = useState('');
   
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchFeaturedProducts()
-      fetchTagsProducts()
-      fetchFollowedProducts()
-  }, [])
-  );
+  useEffect(()=>{
+    fetchFeaturedProducts()
+    fetchTagsProducts()
+    fetchFollowedProducts()
+  },[])
 
   const fetchFeaturedProducts=async()=>{
     await getFeaturedProducts(10).then((response)=>{
@@ -67,6 +65,36 @@ const Home = ({navigation}) => {
     })
   }
 
+  const togglePress=async(item)=>{
+    const {key,isFollowed,viewCount,followedArray}=item
+    let featured = [...featureProducts]
+    let followed = [...followedProducts]
+    let elementsIndex = featured.findIndex(element => element.key == key )
+    featured[elementsIndex] = {...featured[elementsIndex], isFollowed: !featured[elementsIndex].isFollowed}
+    setFeatureProducts(featured)
+    if(isFollowed){
+      followed = followed.filter((item) => {
+        return item.key != key
+      })
+      setfollowedProducts(followed)
+      const followedValue=followedArray.length-1
+      const ratingValue=(viewCount+followedValue)/2
+      await unfollowItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }else{
+      followed.push(featured[elementsIndex])
+      setfollowedProducts(followed)
+      const followedValue=followedArray.length+1
+      const ratingValue=(viewCount+followedValue)/2
+      await followItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }
+  }
+
   const renderFeaturedItem = ({item}) => {
     const {imageArray,isFollowed,price}=item
   return (
@@ -75,6 +103,7 @@ const Home = ({navigation}) => {
       image={{uri:imageArray[0]}}
       featured
       item={item}
+      onPress={()=>togglePress(item)}
       marked={isFollowed}
       price={price}
     />

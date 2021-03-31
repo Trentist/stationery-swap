@@ -2,8 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import assets from '../../assets';
 import { useNavigation } from '@react-navigation/native';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 const Item = (props) => {
+  const {onPress}=props
   const style = props.style;
   const navigation = useNavigation();
 
@@ -17,14 +19,14 @@ const Item = (props) => {
         style={styles.image}
         source={props.image}
       />
-      {
-         props.featured &&
-          <Image
-            style={styles.marked}
-            source={props.marked?assets.images.icons.marked:assets.images.icons.unmarked}
-            resizeMethod="scale"
-            resizeMode="stretch"
-          />
+      {(props.featured && props.marked==true) &&
+         <AntIcon name="heart" style={styles.marked} 
+         onPress={() => { if (onPress) onPress(); }} 
+         size={22} color="red" />
+      }
+      {(props.featured && props.marked==false) &&
+         <AntIcon name="hearto" style={styles.marked} 
+        onPress={() => { if (onPress) onPress(); }} size={22} color="#fff" />
       }
       {
          props.title &&
@@ -56,11 +58,10 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   marked: {
-    width: 20,
-    height: 20,
     position: 'absolute',
     top: 20,
-    right: 15
+    right: 10,
+    zIndex:200
   },
   priceContainer: {
     position: 'absolute',
