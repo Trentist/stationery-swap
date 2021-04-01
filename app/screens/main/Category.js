@@ -79,7 +79,6 @@ const Category = ({navigation,route}) => {
           onEndReached = {({distanceFromEnd})=>{ // problem
             console.log(distanceFromEnd) // 607, 878 
             console.log('reached');
-            onEndReachedThreshold()
           }}
           onEndReachedThreshold={0.5}
           columnWrapperStyle={{justifyContent: 'space-between'}}
