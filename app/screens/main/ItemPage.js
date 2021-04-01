@@ -124,7 +124,10 @@ const ItemPage = ({navigation,route}) => {
         <View style={styles.titelRowView}>
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('sellerprofile')}>
+            onPress={() => navigation.navigate('sellerprofile',{
+              userInfo:userInfo,
+              sellerInfo:sellerInfo
+            })}>
             <Image
               style={styles.avatar}
               source={sellerInfo=='' ? assets.images.samples.avatar2 :{uri: sellerInfo[0].imageUrl}}

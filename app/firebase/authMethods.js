@@ -12,6 +12,8 @@ export async function  signUp(email, pass, name) {
       uid: currentUser.uid,
       email: currentUser.email,
       name: name,
+      follower:[""],
+      following:[""]
     }).catch((error) => {
         throw error
     })
@@ -84,9 +86,12 @@ export async function  getUserInfo() {
           user.push({
             email: doc.data().email,
             key: doc.id,
+            uid:doc.data().uid,
             ProfileName: doc.data().ProfileName,
             imageUrl : doc.data().ProfileImage,
             location : doc.data().location,
+            follower:doc.data().follower,
+            following:doc.data().following,
             description:doc.data().description
           });
         });
@@ -95,6 +100,7 @@ export async function  getUserInfo() {
 
 export async function  getSellerInfo(uid) {
       let user=[];
+      const currentUser = auth().currentUser;
       let snapshot = await firestore()
       .collection('users')
       .where('uid', '==', uid)
@@ -103,12 +109,21 @@ export async function  getSellerInfo(uid) {
        });
       
       snapshot.forEach((doc) => {
+        let following = doc.data().follower
+        console.log("following:",following)
+        let isFollowed = following.some((uid)=> {
+          return uid == currentUser.uid
+        })
           user.push({
-            email: doc.data().email,
             key: doc.id,
+            email: doc.data().email,
+            uid:doc.data().uid,
             ProfileName: doc.data().ProfileName,
             imageUrl : doc.data().ProfileImage,
             location : doc.data().location,
+            follower:doc.data().follower,
+            following:doc.data().following,
+            isFollowed:isFollowed,
             description:doc.data().description
           });
         });

@@ -1,12 +1,39 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { Input } from 'react-native-elements';
 import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
+import {followItem,unfollowItem} from '../../firebase/ratingMethods';
 
 const Category = ({navigation,route}) => {
   const {products} = route.params;
+  const [productList,setProductList] = useState(products)
+  
+
+
+  const togglePress=async(item)=>{
+  const {key,isFollowed,viewCount,followedArray}=item
+    let array = [...productList]
+    let elementsIndex = array.findIndex(element => element.key == key )
+    array[elementsIndex] = {...array[elementsIndex], isFollowed: !array[elementsIndex].isFollowed}
+    setProductList(array)
+    if(isFollowed){
+      const followedValue=followedArray.length-1
+      const ratingValue=(viewCount+followedValue)/2
+      await unfollowItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }else{
+      const followedValue=followedArray.length+1
+      const ratingValue=(viewCount+followedValue)/2
+      await followItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }
+  }
 
   const renderItem = ({ item }) => {
   const {imageArray,isFollowed,price}=item
@@ -16,6 +43,7 @@ const Category = ({navigation,route}) => {
       image={{uri:imageArray[0]}}
       featured
       item={item}
+      onPress={()=>togglePress(item)}
       marked={isFollowed}
       price={price}
     />
@@ -45,9 +73,15 @@ const Category = ({navigation,route}) => {
           style={styles.itemList}
           ItemSeparatorComponent={separator}
           renderItem={renderItem}
-          data={products}
+          data={productList}
           keyExtractor={item => item.key.toString()}
           numColumns={2}
+          onEndReached = {({distanceFromEnd})=>{ // problem
+            console.log(distanceFromEnd) // 607, 878 
+            console.log('reached');
+            onEndReachedThreshold()
+          }}
+          onEndReachedThreshold={0.5}
           columnWrapperStyle={{justifyContent: 'space-between'}}
         />
       </View>

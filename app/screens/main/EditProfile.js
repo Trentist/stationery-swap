@@ -55,6 +55,7 @@ const EditProfile = ({navigation}) => {
   const fetchUserInfo=async()=>{
     await getUserInfo().then((response)=>{
       setBusyModal(false);
+      console.log("user is defined as:",response)
       setUserInfo(response)
     }).catch((error)=>{
       setBusyModal(false);
@@ -109,9 +110,9 @@ const EditProfile = ({navigation}) => {
         </Text>
         <Text style={styles.description}>{userInfo=='' ? "description" : userInfo[0].description}</Text>
         <Text style={styles.detail}>
-          <Text style={{fontWeight: 'bold'}}>200</Text> Following
+          <Text style={{fontWeight: 'bold'}}>{userInfo!=='' && userInfo[0].following.length-1}</Text> Following
           <Text>          </Text>
-          <Text style={{fontWeight: 'bold', marginLeft: 10}}>17.4K</Text> Followers
+          <Text style={{fontWeight: 'bold', marginLeft: 10}}>{userInfo!=='' && userInfo[0].follower.length-1}</Text> Followers
         </Text>
       </View>
       <View style={styles.itemContainer}>

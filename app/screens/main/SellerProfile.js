@@ -1,11 +1,12 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TwoColumnsView} from '../../components/common';
+import {TwoColumnsView,CustomModal} from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
 import {TouchableOpacity} from 'react-native';
+import {followUser,unfollowUser} from '../../firebase/interactionMethods';
 
 const DATA1 = [
   {
@@ -41,7 +42,46 @@ const DATA2 = [
   },
 ];
 
-const SellerProfile = ({navigation}) => {
+const SellerProfile = ({navigation,route}) => {
+  const {userInfo,sellerInfo} =route.params
+  const [seller,setSeller]=useState(sellerInfo[0])
+  const [user,setUser]=useState(userInfo[0])
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState('');
+
+  const togglePress=async()=>{
+    const {uid,isFollowed,follower}=seller
+    const {following}=user
+    let sellerObject=seller
+    let userObject=user
+    sellerObject.isFollowed = !sellerObject.isFollowed
+      if(isFollowed){
+        sellerObject.follower = sellerObject.follower.filter((uid) => {
+          return uid != user.uid
+        })
+        userObject.follower = userObject.follower.filter((uid) => {
+          return uid != seller.uid
+        })
+        setUser(userObject)
+        setSeller(sellerObject)
+        console.log("removed",sellerObject)
+        await unfollowUser(seller.key,user.key,uid,follower,following).catch((error)=>{
+          setErrorModalText(error);
+          setErrorModal(true);
+        })
+      }else{
+        sellerObject.follower.push(user.uid)
+        userObject.follower.push(user.uid)
+        setUser(userObject)
+        setSeller(sellerObject)
+        console.log("added",sellerObject)
+        await followUser(seller.key,user.key,uid,follower,following).catch((error)=>{
+          setErrorModalText(error);
+          setErrorModal(true);
+        })
+      }
+    }
+
   const renderItem = (item, index) => {
     return (
       <Item
@@ -61,29 +101,30 @@ const SellerProfile = ({navigation}) => {
           source={assets.images.samples.profile_back}
         />
         <View style={styles.topRowView}>
-          <Image style={styles.avatar} source={assets.images.samples.avatar2} />
+          <Image style={styles.avatar} source={{uri: seller.imageUrl}} />
           <View style={styles.bageConatiner}>
-            <Text style={styles.badgeText}>Following</Text>
-            {/* <TouchableOpacity onPress={()=>navigation.navigate('Messages')}> */}
+          <TouchableOpacity onPress={()=>togglePress()}>
+            <Text style={styles.badgeText}>{seller.isFollowed ? "following":"follow"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>navigation.navigate('Messages')}>
             <Image
               style={styles.chatIcon}
               source={assets.images.icons.chat_outlined}
             />
-            {/* </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
       </View>
       <View style={styles.titleView}>
-        <Text style={styles.name}>Lisa Moore</Text>
+        <Text style={styles.name}>{seller.ProfileName}</Text>
         <Text style={styles.location}>
-          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />
-          Toronto, Canada
+          <Icon name="location-on" type="material" color="#9F9F9F" size={14} />{seller.location}
         </Text>
-        <Text style={styles.description}>Handmade, gardening, photography</Text>
+        <Text style={styles.description}>{seller.description}</Text>
         <Text style={styles.detail}>
-          <Text style={{fontWeight: 'bold'}}>200</Text> Following
+          <Text style={{fontWeight: 'bold'}}>{seller.following.length-1}</Text> Following
           <Text> </Text>
-          <Text style={{fontWeight: 'bold', marginLeft: 10}}>17.4K</Text>{' '}
+          <Text style={{fontWeight: 'bold', marginLeft: 10}}>{seller.follower.length-1}</Text>{' '}
           Followers
         </Text>
       </View>
@@ -95,6 +136,13 @@ const SellerProfile = ({navigation}) => {
         <Text style={styles.itemTitle}>Looking for</Text>
         <TwoColumnsView data={DATA2} renderItem={renderItem} />
       </View>
+      <CustomModal
+        show={errorModal}
+        onClose={() => setErrorModal(false)}
+        backPress={true}
+        text={errorModalText}
+        okbtn={true}
+      />
     </ScrollView>
   );
 };
