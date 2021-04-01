@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import Item from '../../components/pages/Item';
+import { useFocusEffect } from '@react-navigation/native';
 import {getFeaturedProducts,getTagsProducts,getFollowedProducts} from '../../firebase/productMethods';
 import {getTags} from '../../firebase/tagMethods';
 import {followItem,unfollowItem} from '../../firebase/ratingMethods';
@@ -22,11 +23,13 @@ const Home = ({navigation}) => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorModalText, setErrorModalText] = useState('');
   
-  useEffect(()=>{
+  useFocusEffect(
+    React.useCallback(() => {
     fetchFeaturedProducts()
     fetchTagsProducts()
     fetchFollowedProducts()
   },[])
+  );
 
   const fetchFeaturedProducts=async()=>{
     await getFeaturedProducts(10).then((response)=>{
