@@ -5,7 +5,8 @@ import { TwoColumnsView ,CustomModal} from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
 import config from '../../config';
-import {getUserInfo} from "../../firebase/authMethods"
+import {getUserInfo,loggingOut} from "../../firebase/authMethods"
+import { TouchableOpacity } from 'react-native';
 
 const DATA1 = [
   {
@@ -41,7 +42,7 @@ const DATA2 = [
   },
 ];
 
-const EditProfile = (props) => {
+const EditProfile = ({navigation}) => {
   const [userInfo,setUserInfo] = useState('')
   const [busyModal, setBusyModal] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
@@ -54,16 +55,27 @@ const EditProfile = (props) => {
   const fetchUserInfo=async()=>{
     await getUserInfo().then((response)=>{
       setBusyModal(false);
-      console.log("response:",response.length)
-      if(response.length<=0){
-        console.log("response:",response.length)
-        setErrorModalText('Unknown error occurred.');
-        setErrorModal(true);
-      } else {
-        setUserInfo(response)
-      }
+      console.log("user is defined as:",response)
+      setUserInfo(response)
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
     })
   }
+
+  const logoutUser=async()=>{
+    await loggingOut().then(()=>{
+        navigation.reset({
+          index:0,
+          routes:[{name:'Onboarding'}]
+        }).catch((error)=>{
+          setErrorModalText(error);
+          setErrorModal(true);
+        })  
+      }
+    )
+  } 
 
   const renderItem = (item, index) => {
     return (
@@ -82,6 +94,9 @@ const EditProfile = (props) => {
         <Image style={styles.topImage} source={assets.images.samples.profile_back} />
         <View style={styles.topRowView}>
           <Image style={styles.avatar} source={userInfo=='' ? assets.images.icons.uploadIcon :{uri: userInfo[0].imageUrl}} />
+          <TouchableOpacity style={styles.bageConatiner} onPress={()=>{logoutUser()}}>
+            <Text style={styles.badgeText}>logout</Text>
+          </TouchableOpacity>
           <View style={styles.bageConatiner}>
             <Text style={styles.badgeText}>Edit Profile</Text>
           </View>
@@ -95,9 +110,9 @@ const EditProfile = (props) => {
         </Text>
         <Text style={styles.description}>{userInfo=='' ? "description" : userInfo[0].description}</Text>
         <Text style={styles.detail}>
-          <Text style={{fontWeight: 'bold'}}>200</Text> Following
+          <Text style={{fontWeight: 'bold'}}>{userInfo!=='' && userInfo[0].following.length-1}</Text> Following
           <Text>          </Text>
-          <Text style={{fontWeight: 'bold', marginLeft: 10}}>17.4K</Text> Followers
+          <Text style={{fontWeight: 'bold', marginLeft: 10}}>{userInfo!=='' && userInfo[0].follower.length-1}</Text> Followers
         </Text>
       </View>
       <View style={styles.itemContainer}>

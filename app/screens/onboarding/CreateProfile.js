@@ -26,8 +26,8 @@ const CreateProfile = ({navigation}) => {
   const options = {
     mediaType: 'photo',
     includeBase64: false,
-    maxHeight: 200,
-    maxWidth: 200,
+    maxHeight: 300,
+    maxWidth: 300,
   };
   
   const selectImage=()=>{
@@ -45,26 +45,32 @@ const CreateProfile = ({navigation}) => {
   }
 
   const saveProfile=async()=>{
+    if(selectedPicture && profileName && location && description !== ""){
       setBusyModal(true);
-      await updateProfileInfo(selectedPicture,profileName,location,description).then((response)=>{
+      await updateProfileInfo(selectedPicture,profileName,location,description).then(()=>{
       setBusyModal(false);
-      console.log("get profile information")
-      if(response=="added"){
         navigation.reset({
           index:0,
           routes:[{name:'Main'}]
         })
-      } else if(response.code !==undefined && response.code!==null){
-        setErrorModalText('Unknown error occurred.');
-        setErrorModal(true);
-      }
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
     })
+    }else{
+      setErrorModalText('Please fill all fields');
+      setErrorModal(true);
+    }
   }
 
   return (
     <View style={styles.container}>
-
-      <ImageButton onPress={()=>navigation.goBack()} style={styles.backButton} source={assets.images.icons.back} />
+      <ImageButton
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+        source={assets.images.icons.back}
+      />
 
       <Text style={styles.title}>Create Profile</Text>
       <View style={styles.avatarCont}>
@@ -80,6 +86,7 @@ const CreateProfile = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <Text style={styles.description}>Choose your Avatar</Text>
+
       <TextInput style={[styles.textInput, {height: 50}]} placeholder="Name"
       onChangeText={(text)=>setProfileName(text)} />
       <Dropdown
@@ -117,37 +124,37 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   backButton: {
     alignSelf: 'flex-start',
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   title: {
     alignSelf: 'flex-start',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 30
+    marginBottom: 30,
   },
   avatarCont: {
     width: 140,
     height: 140,
     borderWidth: 1,
     borderColor: '#707070',
-    borderRadius: 70
+    borderRadius: 70,
   },
   touchable: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   description: {
     fontSize: 16,
     color: '#B1B1B1',
-    marginTop: 15
+    marginTop: 15,
   },
   textInput: {
     borderColor: '#707070',
@@ -169,8 +176,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     paddingHorizontal: 18,
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
 export default CreateProfile;

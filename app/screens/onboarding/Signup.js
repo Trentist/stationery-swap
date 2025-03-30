@@ -3,9 +3,7 @@ import {
   View,
   StyleSheet,
   Text,
-  TextInput,
-  Pressable,
-  Button,
+  TextInput
 } from 'react-native';
 import {LargeButton, TextLink, CustomModal} from '../../components/common';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -38,27 +36,26 @@ const Signup = ({navigation}) => {
     const {name, email, password} = values;
 
     setBusyModal(true);
-    await signUp(email, password,name)
-      .then((response) => {
+    await signUp(email, password,name).then(() => {
         setBusyModal(false);
-        if(response=="added"){
           navigation.reset({
             index:0,
             routes:[{name:'CreateProfile'}]
           })
-        } else if (response.code === 'auth/email-already-in-use') {
+      }).catch((error)=>{
+        setBusyModal(false);
+        console.log("error",error)
+        if (error.code === 'auth/email-already-in-use') {
           setErrorModalText('That email address is already in use!');
           setErrorModal(true);
-      
-        } else if (response.code === 'auth/invalid-email') {
+        } else if (error.code === 'auth/invalid-email') {
           setErrorModalText('That email address is invalid!');
           setErrorModal(true);
-        
-        } else if(response.code !==undefined && response.code!==null){
+        } else{
           setErrorModalText('Unknown error occurred.');
           setErrorModal(true);
         }
-      });
+      })
   };
 
   const onSignIn = () => {

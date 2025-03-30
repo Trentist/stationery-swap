@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {View, StyleSheet, Text, Image,FlatList, ScrollView} from 'react-native';
 import {Input} from 'react-native-elements';
 import {
   SmallButton,
@@ -11,75 +11,132 @@ import ChatUser from '../../components/pages/ChatUser';
 import assets from '../../assets';
 import config from '../../config';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {viewedItem} from "../../firebase/ratingMethods"
+import {sendProductComment,getProductComment} from "../../firebase/productCommentMethods"
+import {getUserInfo,getSellerInfo} from "../../firebase/authMethods"
+import {getTagsProducts} from '../../firebase/productMethods';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
-];
+const ItemPage = ({navigation,route}) => {
+  const {key,uid,imageArray,title,price,description,followedArray,viewCount,productTags} =route.params.itemInfo;
+  const [commentList,setCommentList] = useState([])
+  const [productComment,setProductComment] = useState([])
+  const [userInfo,setUserInfo] = useState([])
+  const [sellerInfo,setSellerInfo] = useState([])
+  const [similarProducts,setSimilarProducts] = useState([])
 
-const ItemPage = ({navigation}) => {
-  const renderItem = (item, index) => {
-    return (
-      <Item
-        style={styles.featured}
-        image={assets.images.samples.featured}
-        featured
-        unmarked
-        price={5}
-      />
+  useEffect(()=>{
+    increaseCount()
+    fetchProductComments()
+    fetchUserinfo()
+    fetchSellerInfo()
+    fetchSimilarItem()
+  },[])
+
+  const increaseCount=async()=>{
+   const viewsValue=viewCount+1
+   const ratingValue=(viewsValue+followedArray.length)/2
+   await viewedItem(key,viewsValue,ratingValue).then((response)=>{
+    console.log("response in increase count:",response)
+   })
+  }
+
+  const fetchProductComments=async()=>{
+    await getProductComment(key).then((response)=>{
+     console.log("response of Product Comments:",response)
+     setCommentList(response)
+    })
+  }
+
+  const fetchUserinfo=async()=>{
+    await getUserInfo().then((response)=>{
+      console.log("response:",response)
+        setUserInfo(response)
+    })
+  }
+  
+  const fetchSellerInfo=async()=>{
+    await getSellerInfo(uid).then((response)=>{
+      console.log("id:",uid)
+      console.log("response of seller :",response)
+        setSellerInfo(response)
+    })
+  }
+
+  const fetchSimilarItem=async()=>{
+      const tags=[{tag:productTags[0]}]
+      await getTagsProducts(8,tags).then((response)=>{
+        console.log("tag product list:",response)
+        setSimilarProducts(response)
+      }).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+  }
+
+  const sendComment=async()=>{
+    let commentArray = [...commentList]
+      commentArray.push({
+        itemId : key,
+        uid : userInfo[0].uid,
+        ProfileImage:userInfo[0].imageUrl,
+        ProfileName:userInfo[0].ProfileName,
+        productComment:productComment
+      })
+      setCommentList(commentArray)
+      console.log("se")
+    await sendProductComment(key,userInfo[0].imageUrl,userInfo[0].ProfileName,productComment).then((response)=>{
+     console.log("response of send product Comments:",response)
+     setProductComment("");
+    })
+  }
+
+  const renderItem = (item) => {
+    const {imageArray,isFollowed,price}=item
+  return (
+    <Item
+      style={styles.featured}
+      image={{uri:imageArray[0]}}
+      featured
+      item={item}
+      marked={isFollowed}
+      price={price}
+    />
     );
   };
+  
+  const renderCommentsItem = ({item}) => {
+    const {ProfileImage,ProfileName,productComment}=item
+    console.log("item inside:",item)
+    return (
+      <ChatUser
+      style={styles.chatUser}
+      image={{uri:ProfileImage}}
+      name={ProfileName}
+      content={productComment}
+    />
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image style={styles.topImage} source={assets.images.samples.item} />
+      <Image style={styles.topImage} source={{uri:imageArray[0]}} />
       <View style={styles.titleView}>
         <View style={styles.titelRowView}>
-          <Text style={styles.title}>Pencil Cases</Text>
+          <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('sellerprofile')}>
+            onPress={() => navigation.navigate('sellerprofile',{
+              userInfo:userInfo,
+              sellerInfo:sellerInfo
+            })}>
             <Image
               style={styles.avatar}
-              source={assets.images.samples.avatar2}
+              source={sellerInfo=='' ? assets.images.samples.avatar2 :{uri: sellerInfo[0].imageUrl}}
             />
           </TouchableOpacity>
         </View>
         <View style={[styles.titelRowView, {marginTop: 10}]}>
-          <Text style={styles.price}>$15</Text>
-          <Text style={styles.location}>Tronto, Canada</Text>
+          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.location}>{sellerInfo=='' ? "location" : sellerInfo[0].location}</Text>
         </View>
       </View>
       <View style={styles.messageView}>
@@ -104,40 +161,38 @@ const ItemPage = ({navigation}) => {
       <View style={styles.descView}>
         <Text style={styles.descTitle}>Description</Text>
         <Text style={styles.descContent}>
-          Hi all! I am Lisa and I’m from Toronto. I would like to arrange a swap
-          with someone, please send me a DM if you are interested
+        {description}
         </Text>
       </View>
       <View style={styles.chatHistoryView}>
-        <ChatUser
-          style={styles.chatUser}
-          image={assets.images.samples.avatar1}
-          name="Samanta"
-          content="Wonderful pencil cases! I sent you a DM!"
-        />
-        <ChatUser
-          style={styles.chatUser}
-          image={assets.images.samples.avatar2}
-          name="Bella"
-          content="I love this!"
+        <FlatList
+          renderItem={renderCommentsItem}
+          showsVerticalScrollIndicator={false}
+          data={commentList}
+          keyExtractor={(item,index) => index.toString()}
         />
       </View>
       <View style={styles.commentView}>
         <Image
           style={styles.commentAvatar}
-          source={assets.images.samples.avatar1}
+          source={userInfo=='' ? assets.images.icons.uploadIcon :{uri: userInfo[0].imageUrl}}
         />
         <Input
           containerStyle={styles.commentInputContainer}
           inputContainerStyle={{borderBottomWidth: 0, height: '100%'}}
           inputStyle={styles.commentInput}
-          rightIcon={<CustomButton style={styles.commentButton} title="Post" />}
+          value={productComment}
+          onChangeText={(text)=>setProductComment(text)}
           placeholder="Add a comment..."
         />
+        <View style={styles.commentButtonContainer}>
+        <CustomButton style={styles.commentButton} title="Post" onPress={sendComment}/>
+        </View>
+
       </View>
       <View style={styles.itemContainer}>
         <Text style={styles.itemTitle}>Similar Items</Text>
-        <TwoColumnsView data={DATA} renderItem={renderItem} />
+        <TwoColumnsView data={similarProducts} renderItem={renderItem} />
       </View>
     </ScrollView>
   );
@@ -152,9 +207,11 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    paddingBottom:400
   },
   topImage: {
     width: '100%',
+    height:"20%"
   },
   titleView: {
     width: '100%',
@@ -251,7 +308,7 @@ const styles = StyleSheet.create({
   chatHistoryView: {
     borderBottomColor,
     borderBottomWidth: 1,
-    width: '100%',
+    width: '100%'
   },
   chatUser: {
     paddingHorizontal,
@@ -280,17 +337,18 @@ const styles = StyleSheet.create({
     borderColor: '#707070',
     borderWidth: 1,
     alignItems: 'center',
+  borderTopRightRadius:0,
+  borderBottomRightRadius:0,
+  borderRightWidth:0,
   },
   commentInput: {
     color: 'black',
     fontSize: 14,
+    
   },
   commentButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    backgroundColor:'transparent',
     color: '#F36190',
-    width: 50,
-    height: '100%',
     fontSize: 14,
   },
   itemContainer: {
@@ -317,6 +375,23 @@ const styles = StyleSheet.create({
     width: '48%',
     height: 200,
   },
+
+  commentButtonContainer:
+  {
+
+    borderWidth:1,
+    borderColor: '#707070',
+    height:36,
+    justifyContent:'center',
+    alignItems:'center',
+    width:60,
+    borderTopRightRadius:18,
+    borderBottomRightRadius:18,
+    borderLeftWidth:0,
+
+
+    
+  }
 });
 
 export default ItemPage;

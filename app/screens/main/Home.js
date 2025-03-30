@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,69 +9,123 @@ import {
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import Item from '../../components/pages/Item';
-import assets from '../../assets';
-
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d78',
-    title: 'Third Item',
-  },
-];
+import { useFocusEffect } from '@react-navigation/native';
+import {getFeaturedProducts,getTagsProducts,getFollowedProducts} from '../../firebase/productMethods';
+import {getTags} from '../../firebase/tagMethods';
+import {followItem,unfollowItem} from '../../firebase/ratingMethods';
+import {CustomModal} from '../../components/common';
 
 const Home = ({navigation}) => {
-  const renderFeaturedItem = ({item}) => (
+  const [featureProducts,setFeatureProducts] = useState([])
+  const [tagProducts,setTagProducts] = useState([])
+  const [followedProducts,setfollowedProducts] = useState([])
+  const [busyModal, setBusyModal] = useState(true);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorModalText, setErrorModalText] = useState('');
+  
+  useFocusEffect(
+    React.useCallback(() => {
+    fetchFeaturedProducts()
+    fetchTagsProducts()
+    fetchFollowedProducts()
+  },[])
+  );
+
+  const fetchFeaturedProducts=async()=>{
+    await getFeaturedProducts(10).then((response)=>{
+      console.log("response:",response)
+      setFeatureProducts(response)
+      setBusyModal(false);
+    }).catch((error)=>{
+      setBusyModal(false);
+      setErrorModalText(error);
+      setErrorModal(true);
+    })
+  }
+
+  const fetchTagsProducts=async()=>{
+    await getTags(10).then(async(tags)=>{
+      await getTagsProducts(1,tags).then((response)=>{
+        console.log("tag product list:",response)
+        setTagProducts(response)
+      }).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }).catch((error)=>{
+      setErrorModalText(error);
+      setErrorModal(true);
+    })
+  }
+
+  const fetchFollowedProducts=async()=>{
+    await getFollowedProducts(10).then((response)=>{
+      console.log("followed:",response)
+      setfollowedProducts(response)
+    }).catch((error)=>{
+      setErrorModalText(error);
+      setErrorModal(true);
+    })
+  }
+
+  const togglePress=async(item)=>{
+    const {key,isFollowed,viewCount,followedArray}=item
+    let featured = [...featureProducts]
+    let followed = [...followedProducts]
+    let elementsIndex = featured.findIndex(element => element.key == key )
+    featured[elementsIndex] = {...featured[elementsIndex], isFollowed: !featured[elementsIndex].isFollowed}
+    setFeatureProducts(featured)
+    if(isFollowed){
+      followed = followed.filter((item) => {
+        return item.key != key
+      })
+      setfollowedProducts(followed)
+      const followedValue=followedArray.length-1
+      const ratingValue=(viewCount+followedValue)/2
+      await unfollowItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }else{
+      followed.push(featured[elementsIndex])
+      setfollowedProducts(followed)
+      const followedValue=followedArray.length+1
+      const ratingValue=(viewCount+followedValue)/2
+      await followItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }
+  }
+
+  const renderFeaturedItem = ({item}) => {
+    const {imageArray,isFollowed,price}=item
+  return (
     <Item
       style={styles.featured}
-      image={assets.images.samples.featured}
+      image={{uri:imageArray[0]}}
       featured
-      unmarked
-      price={5}
+      item={item}
+      onPress={()=>togglePress(item)}
+      marked={isFollowed}
+      price={price}
     />
-  );
-  const renderCategoryItem = ({item}) => (
-    <Item
-      style={styles.category}
-      image={assets.images.samples.category}
-      category
-      title="Calligraphy Cards"
-    />
-  );
+    );
+  }
+
+  const renderTagsItem = ({item}) => {
+    const {imageArray,topTag} = item 
+    return (
+      <Item
+        style={styles.category}
+        image={{uri:imageArray[0]}}
+        item={item}
+        category
+        title={topTag}
+        />
+      );
+  }
+
   const separator = () => <View style={{width: 25}}></View>;
   return (
     <View style={styles.container}>
@@ -82,13 +136,25 @@ const Home = ({navigation}) => {
         containerStyle={styles.searchBox}
         inputStyle={{fontSize: 15, paddingVertical: 0}}
       />
-      <ScrollView style={styles.mainContainer}>
+      {busyModal ?
+      (
+        <CustomModal
+        show={busyModal}
+        onClose={() => setBusyModal(false)}
+        busy={true}
+        backPress={true}
+        text="Please wait..."
+      />
+        ) : (
+      <ScrollView style={styles.mainContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.itemsContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Featured</Text>
             <TouchableOpacity>
               <Text
-                onPress={() => navigation.navigate('Category')}
+                onPress={() => navigation.navigate('Category',{
+                  products:featureProducts
+                })}
                 style={styles.seeAll}>
                 See all ▶
               </Text>
@@ -99,8 +165,9 @@ const Home = ({navigation}) => {
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            data={featureProducts}
+            keyExtractor={(item) => item.key.toString()}
             horizontal
           />
         </View>
@@ -118,9 +185,10 @@ const Home = ({navigation}) => {
           <FlatList
             style={styles.itemList}
             ItemSeparatorComponent={separator}
-            renderItem={renderCategoryItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderTagsItem}
+            showsHorizontalScrollIndicator={false}
+            data={tagProducts}
+            keyExtractor={(item,index) => index.toString()}
             horizontal
           />
         </View>
@@ -129,7 +197,9 @@ const Home = ({navigation}) => {
             <Text style={styles.title}>People you follow</Text>
             <TouchableOpacity>
               <Text
-                onPress={() => navigation.navigate('Category')}
+                onPress={() => navigation.navigate('Category',{
+                  products:followedProducts
+                })}
                 style={styles.seeAll}>
                 See all ▶
               </Text>
@@ -139,12 +209,22 @@ const Home = ({navigation}) => {
             style={styles.itemList}
             ItemSeparatorComponent={separator}
             renderItem={renderFeaturedItem}
-            data={DATA}
-            keyExtractor={(item) => item.id.toString()}
+            data={followedProducts}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.key.toString()}
             horizontal
           />
         </View>
       </ScrollView>
+       )
+       }
+       <CustomModal
+        show={errorModal}
+        onClose={() => setErrorModal(false)}
+        backPress={true}
+        text={errorModalText}
+        okbtn={true}
+      />
     </View>
   );
 };

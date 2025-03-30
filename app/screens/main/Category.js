@@ -1,58 +1,55 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { Input } from 'react-native-elements';
 import { ImageButton } from '../../components/common';
 import Item from '../../components/pages/Item';
 import assets from '../../assets';
+import {followItem,unfollowItem} from '../../firebase/ratingMethods';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d71',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d77',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d79',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d78',
-    title: 'Third Item',
-  },
-];
+const Category = ({navigation,route}) => {
+  const {products} = route.params;
+  const [productList,setProductList] = useState(products)
+  
 
 
-const Category = ({navigation}) => {
-  const renderItem = ({ item }) => (
-    <Item style={styles.featured} image={assets.images.samples.featured} featured unmarked price={5} />
-  );
+  const togglePress=async(item)=>{
+  const {key,isFollowed,viewCount,followedArray}=item
+    let array = [...productList]
+    let elementsIndex = array.findIndex(element => element.key == key )
+    array[elementsIndex] = {...array[elementsIndex], isFollowed: !array[elementsIndex].isFollowed}
+    setProductList(array)
+    if(isFollowed){
+      const followedValue=followedArray.length-1
+      const ratingValue=(viewCount+followedValue)/2
+      await unfollowItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }else{
+      const followedValue=followedArray.length+1
+      const ratingValue=(viewCount+followedValue)/2
+      await followItem(key,followedArray,ratingValue).catch((error)=>{
+        setErrorModalText(error);
+        setErrorModal(true);
+      })
+    }
+  }
+
+  const renderItem = ({ item }) => {
+  const {imageArray,isFollowed,price}=item
+  return (
+    <Item
+      style={styles.featured}
+      image={{uri:imageArray[0]}}
+      featured
+      item={item}
+      onPress={()=>togglePress(item)}
+      marked={isFollowed}
+      price={price}
+    />
+    );
+  }
+
   const separator = () => (
     <View style={{width: 20, height: 15}}></View>
   );
@@ -76,9 +73,14 @@ const Category = ({navigation}) => {
           style={styles.itemList}
           ItemSeparatorComponent={separator}
           renderItem={renderItem}
-          data={DATA}
-          keyExtractor={item => item.id.toString()}
+          data={productList}
+          keyExtractor={item => item.key.toString()}
           numColumns={2}
+          onEndReached = {({distanceFromEnd})=>{ // problem
+            console.log(distanceFromEnd) // 607, 878 
+            console.log('reached');
+          }}
+          onEndReachedThreshold={0.5}
           columnWrapperStyle={{justifyContent: 'space-between'}}
         />
       </View>
